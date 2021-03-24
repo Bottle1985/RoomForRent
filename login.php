@@ -3,7 +3,10 @@
 	
 	if($_POST){
 
-		require_once('connection.php');
+		$host="localhost";
+		$user="id16381796_wp_c1fdf0feee89c3d26f1e19a8d798dc94";
+		$pass="alohamorah7";
+		$db="id16381796_wp_c1fdf0feee89c3d26f1e19a8d798dc94";
 
 		$username=$_POST['username'];
 		$password=$_POST['password'];
@@ -16,7 +19,7 @@
 		if(mysqli_num_rows($result)==1)
 		{
 				/*session_start();*/
-				$_SESSION['user']='true';
+				$_SESSION['id1370950_demo_cse311']='true';
 				header('location:userprofile.php');
 				$_SESSION['username']=$username;
 				

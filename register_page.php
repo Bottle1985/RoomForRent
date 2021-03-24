@@ -1,8 +1,36 @@
+<!--  <!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8">
+		<title>HOME PORT | Sign Up</title>
+		<link rel="icon" type="image/gif" href="favicon.gif" />
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
 
+
+	<body>
+		<header>
+			<nav>
+				<ul>
+					<li><a href="home.html">Home</a></li>
+					<li><a href="member_registration.html">Sign Up</a></li>
+					<li><a href="member_list.html">Flat list</a></li>
+					<li><a href="contact_us.html">Contact Us</a></li>
+				</ul>
+			</nav>
+		</header>
+	 
+		
+				
+		<h1 class='elegantshadow'>HOME PORT</h1>
+
+
+
+
+	 <div id="main-content" class="clearfix">  -->
 
 	 <?php
 	 	include_once "includes/header.php";
-
 	 ?>
 
 	 	<form name="member_registration" method="post" action="save_member.php">

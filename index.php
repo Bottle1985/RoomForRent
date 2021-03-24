@@ -1,21 +1,20 @@
 <?php
 	 	include_once "includes/header.php";
 	 	include_once "connection.php";
-error_reporting(0);
+
 ?>
 
 
 <?php
 
-if(!$_SESSION['user'])
+if(!$_SESSION['id1370950_demo_cse311'])
 {
 	header ('location:login.php');
-    error_reporting(0);
 }
 
 ?>
 	<div align="center">
-        <h1><strong> Welcome, </strong> <strong> <?php echo $_SESSION['username']?></strong><strong> !</strong></h1>
+		<strong> Welcome, </strong> <strong> <?php echo $_SESSION['username']?></strong><strong> !</strong>
 	</div>
 
 	<!-- <div>

@@ -14,23 +14,23 @@
 		
 			<tr>
 				
-				<td>Person 1</td>
+				<td>Fazal Mahmud Niloy</td>
 				<td>1321579042</td>
-				<td>example@contact.com</td>
+				<td>niloooy@gmail.com</td>
 				
 			</tr>
 			<tr>
 				
-				<td>Person 2</td>
+				<td>Md. Sakibul Alam</td>
 				<td>1420604042</td>
-				<td>example@contact.com</td>
+				<td>sakibul.alam@northsouth.edu</td>
 				
 			</tr>
 			<tr>
 				
-				<td>Person 3</td>
+				<td>Ashikur Rahman</td>
 				<td>1321409042</td>
-				<td>example@contact.com</td>
+				<td>Ashikur.rahman13@northsouth.edu</td>
 				
 			</tr>
 

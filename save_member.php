@@ -24,7 +24,7 @@
 		?>
 
 		<div style="width: 70%; margin: 0 auto;">
-			<div><img src="images/success.png" alt="Success Icon" style="float: left;width: 25%; height:auto;width:100px;"/></div>
+			<div><img src="images/success.png" alt="Success Icon" style="float: left;width: 25%;"/></div>
 			<div><h1 style="float: right; font-size: 1.5em;"> Member Added Successfully!</h1></div>
 		</div>
 
