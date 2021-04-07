@@ -23,9 +23,9 @@ if(!$_SESSION['id1370950_demo_cse311'])
 				<p>
 					<strong>Flat City</strong><br>
 					<select name="flat_city">
-						<option value="dhaka">Dhaka</option>
-						<option value="chittagong">Chittagong</option>
-						<option value="barisal">Barisal</option>
+						<option value="NhaTrang">Nha Trang</option>
+						<option value="DaLat">Da Lat</option>
+						<option value="HoChiMinh">Ho Chi Minh</option>
 					</select> 
 				</p> 
 				<p>
