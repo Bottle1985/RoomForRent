@@ -5,7 +5,8 @@
 
 		$host="localhost";
 		$user="id16381796_wp_c1fdf0feee89c3d26f1e19a8d798dc94";
-		$pass="alohamorah7";
+		// Change over time for password
+		$pass="lnfSUdAk29$smtj{";
 		$db="id16381796_wp_c1fdf0feee89c3d26f1e19a8d798dc94";
 
 		$username=$_POST['username'];
