@@ -15,17 +15,17 @@ if (isset($_SESSION['registered'])) {
     // remove the key so we don't keep outputting the message
     unset($_SESSION['registered']);
 }
-// if(!$_SESSION['id1370950_demo_cse311'])
-// {
-	// header ('location:login.php');
-// }
+if(!$_SESSION['id1370950_demo_cse311'])
+{
+	header ('location:login.php');
+}
 
 ?>
 	<div align="center">
-		<strong> Welcome, </strong> <strong> Gentlemen</strong><strong> !</strong>
+		<strong> Welcome, </strong> <strong> <?php echo $_SESSION['username']?></strong><strong> !</strong>
 	</div>
 
-	<!-- <div>
+	<!--<div>
 		<div align="center">
 			<form method="POST" action="post_ad.php">
 				<div class="centerdiv" style="width: 25%; margin: 0 auto;float: left;">
@@ -37,7 +37,7 @@ if (isset($_SESSION['registered'])) {
 					<button class="button submit">Find Flats</button>
 				</div>
 			</form>
-	</div> -->
+	</div>-->
 	
 
 	<div>
