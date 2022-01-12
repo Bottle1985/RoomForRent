@@ -6,15 +6,23 @@
 
 
 <?php
+// check that the 'registered' key exists
+if (isset($_SESSION['registered'])) {
 
-if(!$_SESSION['id1370950_demo_cse311'])
-{
-	header ('location:login.php');
+    // it does; output the message
+    echo $_SESSION['registered'];
+
+    // remove the key so we don't keep outputting the message
+    unset($_SESSION['registered']);
 }
+// if(!$_SESSION['id1370950_demo_cse311'])
+// {
+	// header ('location:login.php');
+// }
 
 ?>
 	<div align="center">
-		<strong> Welcome, </strong> <strong> <?php echo $_SESSION['username']?></strong><strong> !</strong>
+		<strong> Welcome, </strong> <strong> Gentlemen</strong><strong> !</strong>
 	</div>
 
 	<!-- <div>
