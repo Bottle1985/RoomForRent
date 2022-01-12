@@ -69,9 +69,9 @@
 				<p>
 					<strong>City</strong><br>
 					<select name="city">
-						<option value="dhaka">Dhaka</option>
-						<option value="chittagong">Chittagong</option>
-						<option value="barisal">Barisal</option>
+						<option value="nhatrang">Nha Trang</option>
+						<option value="hochiminh">Hồ Chí Minh</option>
+						<option value="hanoi">Hà Nội</option>
 					</select> 
 				</p> 
 				<p>
