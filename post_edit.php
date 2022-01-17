@@ -30,9 +30,9 @@
 				<p>
 					<strong>Flat City</strong><br> <!-- flat_city -->
 					<select name="flat_city">
-						<option value="dhaka">Dhaka</option>
-						<option value="chittagong">Chittagong</option>
-						<option value="barisal">Barisal</option>
+						<option value="Nha Trang">Nha Trang</option>
+						<option value="Hà Nội">Hà Nội</option>
+						<option value="TP HCM">TP HCM</option>
 					</select> 
 				</p> 
 			 	
