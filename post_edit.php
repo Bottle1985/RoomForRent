@@ -56,6 +56,9 @@
 					<strong>Number of Rooms</strong><br> <!-- num_of_rooms -->
 					<input id="text5" type="text" name="num_of_rooms"/>
 				</p>
+				<div><strong>Change Image</strong>
+    			<input type="file" name="image" id="image">
+    			</div>
 				<p>
 					<strong>Additional Informations</strong><br>
 					<input id="text5" type="text" name="additional_info"/>
