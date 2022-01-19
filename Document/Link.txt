@@ -2,3 +2,4 @@ https://github.com/Faiaaz/Apartment-Rental-System
 
 Link web:
 https://apartmentnt.000webhostapp.com/
+https://itsourcecode.com/uml/hostel-management-system-use-case-diagram/
