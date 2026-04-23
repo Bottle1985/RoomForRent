@@ -3,11 +3,11 @@
 	
 	if($_POST){
 
-		$host="localhost";
-		$user="id18253098_bottle1985";
+		$host="sql211.infinityfree.com";
+		$user="if0_40797762";
 		// Change over time for password
-		$pass="*iD3Mw@?RfIJO9]o";
-		$db="id18253098_apartment";
+		$pass="mbL68p8nsevaw";
+		$db="if0_40797762_apartment";
 
 		$username=$_POST['username'];
 		$password=$_POST['password'];

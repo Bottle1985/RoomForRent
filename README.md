@@ -6,3 +6,7 @@ Step to run
 2. Great acount
 3. Creat host
 4. Upload file project through file manager 
+
+I. Creat database
+1. Go to phpadmin
+2. Import form file Database/DB.sql
