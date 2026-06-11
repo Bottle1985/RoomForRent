@@ -15,14 +15,15 @@ if (isset($_SESSION['registered'])) {
     // remove the key so we don't keep outputting the message
     unset($_SESSION['registered']);
 }
-if(!$_SESSION['id1370950_demo_cse311'])
-{
-	header ('location:login.php');
-}
-
+$loggedIn = isset($_SESSION['id1370950_demo_cse311']) && $_SESSION['id1370950_demo_cse311'];
 ?>
 	<div align="center">
-		<strong> Welcome, </strong> <strong> <?php echo $_SESSION['username']?></strong><strong> !</strong>
+		<?php if ($loggedIn) { ?>
+			<strong> Welcome, </strong> <strong> <?php echo htmlspecialchars($_SESSION['username']); ?></strong><strong> !</strong>
+		<?php } else { ?>
+			<strong> Welcome to Home Port</strong>
+			<p>Please <a href="login.php">login</a> or <a href="register_page.php">sign up</a> to access member features.</p>
+		<?php } ?>
 	</div>
 
 	<!--<div>
