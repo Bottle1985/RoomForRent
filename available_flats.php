@@ -6,12 +6,7 @@
 
 
 <?php
-
-if(!$_SESSION['id1370950_demo_cse311'])
-{
-	header ('location:login.php');
-}
-
+// Allow public viewing of available flats without forcing login.
 ?>
 
 <?php
