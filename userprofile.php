@@ -11,6 +11,7 @@
 			<div align="center">
 				<p> <strong><a href="myads.php">Edit Your Ads</a></strong>
 				<strong><a href="seevalues.php">User Details</a></strong>
+			<strong><a href="editprofile.php">Edit Profile</a></strong>
 				
 				</p>
 				<p>
