@@ -42,28 +42,38 @@
 	 $apt_size    =$_POST['flat_size'];
 	 $apt_no_of_rooms    =$_POST['num_of_rooms'];
 	 $apt_additional_info=$_POST['additional_info'];
-	 $apt_image		  =$_POST['image']	;
+	 $apt_image		  =isset($_POST['image']) ? $_POST['image'] : '';
 	 
 	 $apartment=mysqli_query($con,"UPDATE available_flats  
 	 	set flat_city='$apt_city', 
 	 	flat_location='$apt_location',
 	 	flat_rent    ='$rent', 
-	 	availabile   ='$available' 
+	 	available   ='$available' 
 	 	where flat_id='$apt_id'");
 	// print_r($apt_image);
-	 $apartment_details=mysqli_query($con,"UPDATE flat_details 
-	 	set  flat_city='$apt_city', 
-	 	flat_location='$apt_location',
-	 	flat_size  ='$apt_size',
-	 	num_of_rooms   ='$apt_no_of_rooms', 
-	 	additional_info='$apt_additional_info', 
-		image='$apt_image'
-	 	where flat_id  ='$apt_id' ");
+	 if(empty($apt_image)){
+		 $apartment_details=mysqli_query($con,"UPDATE flat_details 
+		 	set  flat_city='$apt_city', 
+		 	flat_location='$apt_location',
+		 	flat_size  ='$apt_size',
+		 	num_of_rooms   ='$apt_no_of_rooms', 
+		 	additional_info='$apt_additional_info'
+		 	where flat_id  ='$apt_id' ");
+	 } else {
+		 $apartment_details=mysqli_query($con,"UPDATE flat_details 
+		 	set  flat_city='$apt_city', 
+		 	flat_location='$apt_location',
+		 	flat_size  ='$apt_size',
+		 	num_of_rooms   ='$apt_no_of_rooms', 
+		 	additional_info='$apt_additional_info', 
+			image='$apt_image'
+		 	where flat_id  ='$apt_id' ");
+	 }
 		
 ?>
 
 		<div style="width: 70%; margin: 0 auto;">
-			<div><img src="images/success.png" alt="Success Icon" style="float: left;width: 25%;"/></div>
+			<div style="float: left; width: 25%; font-size: 5em; text-align: center; color: #28a745;">✓</div>
 			<div><h1 style="float: right; font-size: 1.5em;"> Post Edited Successfully!</h1></div>
 		</div>
 

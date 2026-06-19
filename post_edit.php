@@ -23,45 +23,45 @@
 				<p>
 					<strong>Availablity</strong><br> <!-- available -->
 			    	
-					<input type="radio" name="available" value="1" checked="checked" />Available  
-					<input type="radio" name="available" value="0"/>Not Available
+					<input type="radio" name="available" value="1" <?php if($aptdetails['available']==1) echo 'checked="checked"'; ?> />Available  
+					<input type="radio" name="available" value="0" <?php if($aptdetails['available']==0) echo 'checked="checked"'; ?>/>Not Available
 				</p>
 
 				<p>
 					<strong>Flat City</strong><br> <!-- flat_city -->
 					<select name="flat_city">
-						<option value="Nha Trang">Nha Trang</option>
-						<option value="Hà Nội">Hà Nội</option>
-						<option value="TP HCM">TP HCM</option>
+						<option value="Nha Trang" <?php if($aptdetails['flat_city']=='Nha Trang') echo 'selected'; ?>>Nha Trang</option>
+						<option value="Hà Nội" <?php if($aptdetails['flat_city']=='Hà Nội') echo 'selected'; ?>>Hà Nội</option>
+						<option value="TP HCM" <?php if($aptdetails['flat_city']=='TP HCM') echo 'selected'; ?>>TP HCM</option>
 					</select> 
 				</p> 
 			 	
 			 	<p>
 					<strong>Flat Location</strong><br> <!-- flat_location -->
-					<input id="text5" type="text" name="flat_location"/>
+					<input id="text5" type="text" name="flat_location" value="<?php echo htmlspecialchars($aptdetails['flat_location']); ?>"/>
 				</p>
 
 				<p>
 					<strong>Flat Rent</strong><br> <!-- flat_rent -->
-					<input id="text5" type="text" name="flat_rent"/>
+					<input id="text5" type="text" name="flat_rent" value="<?php echo htmlspecialchars($aptdetails['flat_rent']); ?>"/>
 				</p>
 
 			</div>
 			<div class="right">
 				<p>
 					<strong>Flat Size</strong><br> <!-- flat_size -->
-					<input id="text5" type="number" name="flat_size"/>
+					<input id="text5" type="number" name="flat_size" value="<?php echo htmlspecialchars($aptdetails['flat_size']); ?>"/>
 				</p> 
 				<p>
 					<strong>Number of Rooms</strong><br> <!-- num_of_rooms -->
-					<input id="text5" type="text" name="num_of_rooms"/>
+					<input id="text5" type="text" name="num_of_rooms" value="<?php echo htmlspecialchars($aptdetails['num_of_rooms']); ?>"/>
 				</p>
 				<div><strong>Change Image</strong>
     			<input type="file" name="image" id="image">
     			</div>
 				<p>
 					<strong>Additional Informations</strong><br>
-					<input id="text5" type="text" name="additional_info"/>
+					<input id="text5" type="text" name="additional_info" value="<?php echo htmlspecialchars($aptdetails['additional_info']); ?>"/>
 				</p> 
 				<p>
 					<button class="button submit">Update!</button>
