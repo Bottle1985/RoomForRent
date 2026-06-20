@@ -24,41 +24,43 @@
 		</div>
 		
 		<div >
-			<table class="tblclss"; style="border-collapse: collapse;width: 100%">
+			<table class="tblclss" style="border-collapse: collapse;width: 100%;">
 				<tr>
-					<th style="background-color:#95a5a6; padding: 5px 10px">Owner</th><br>
-					<th style="background-color:#95a5a6; padding: 5px 10px">Name</th><br>
-					<th style="background-color:#95a5a6; padding: 5px 10px">Rent</th<br>
-					<th style="background-color:#95a5a6; padding: 5px 10px">City</th><br>
-					<td style="background-color:#95a5a6; padding: 5px 10px">Location</td><br>
-					<td style="background-color:#95a5a6; padding: 5px 10px">Rooms</td><br>
-					<td style="background-color:#95a5a6; padding: 5px 10px">Additional Info.</td><br>
+					<th style="background-color:#95a5a6; padding: 8px 10px; width: 30%;">Label</th>
+					<th style="background-color:#95a5a6; padding: 8px 10px;">Value</th>
 				</tr>
 				<tr>
-					<th ><?php echo $aptdetails['first_name']; ?></th><br>
-					<th ><?php echo $aptdetails['last_name']; ?></th><br>
-					<th ><?php echo $aptdetails['flat_rent']; ?></th<br>
-					<th ><?php echo $aptdetails['flat_city']; ?></th><br>
-					<td ><?php echo $aptdetails['flat_location']; ?></td><br>
-					<td ><?php echo $aptdetails['num_of_rooms']; ?></td><br>
-					<td ><?php echo $aptdetails['additional_info']; ?></td><br>
+					<td style="background-color:#95a5a6; padding: 8px 10px;">Owner</td>
+					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['first_name'] . ' ' . $aptdetails['last_name']); ?></td>
 				</tr>
-				<style>
-					table {
-					    border-collapse: collapse;
-					    width: 100%;
-					}
-
-					th, td {
-					    padding: 8px;
-					    text-align: left;
-					    border-bottom: 1px solid #ddd;
-					}
-
-					tr:hover{background-color:#f5f5f5}
-				</style>
+				<tr>
+					<td style="background-color:#95a5a6; padding: 8px 10px;">Rent</td>
+					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['flat_rent']); ?></td>
+				</tr>
+				<tr>
+					<td style="background-color:#95a5a6; padding: 8px 10px;">City</td>
+					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['flat_city']); ?></td>
+				</tr>
+				<tr>
+					<td style="background-color:#95a5a6; padding: 8px 10px;">Location</td>
+					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['flat_location']); ?></td>
+				</tr>
+				<tr>
+					<td style="background-color:#95a5a6; padding: 8px 10px;">Rooms</td>
+					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['num_of_rooms']); ?></td>
+				</tr>
+				<tr>
+					<td style="background-color:#95a5a6; padding: 8px 10px;">Additional Info</td>
+					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['additional_info']); ?></td>
+				</tr>
 			</table>
 		</div>
+	</div>
+
+	 </div> 
+
+	</body>
+</html>		</div>
 		
 	</div>
 
