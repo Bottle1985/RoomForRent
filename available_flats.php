@@ -23,7 +23,9 @@
 
 	
 ?>
+	<div class="responsive-table">
 	<table style="border-collapse: collapse;width: 100%">
+		<thead>
 		<tr>
 			<th>ID</th>
 			<th>Apartment Size</th>
@@ -33,43 +35,27 @@
 			<th>City</th>
 			<th>Availability</th>
 			<th>Owners Name</th>
+			<th>Action</th>
 		</tr>
+		</thead>
+		<tbody>
 		<?php 
 			foreach($apartments as $apartment){
 		?>
 			<tr>
-				<td><?php echo $apartment['flat_id'] ?></td>
-				<td><?php echo $apartment['flat_size'] ?></td>
-				<td><?php echo $apartment['num_of_rooms'] ?></td>
-				<td><?php echo $apartment['flat_rent'] ?></td>
-				<td><?php echo $apartment['flat_location'] ?></td>
-				<td><?php echo $apartment['flat_city'] ?></td>
-				<td><?php if($apartment['available']==1){?> <a href="flat_details.php?id=<?php echo $apartment['flat_id'];?>">Show Details</a><?php } else{echo "NOT AVAILABLE"; } ?></td>
-				<td><?php echo $apartment['first_name'].' '.$apartment['last_name'] ?></td>
-				<td><a href="reserve_flat.php?id=<?php echo $apartment['flat_id'];?>">Reserve Flat</a></td>
+				<td data-label="ID"><?php echo $apartment['flat_id'] ?></td>
+				<td data-label="Apartment Size"><?php echo $apartment['flat_size'] ?></td>
+				<td data-label="No. Of Rooms"><?php echo $apartment['num_of_rooms'] ?></td>
+				<td data-label="Rent"><?php echo $apartment['flat_rent'] ?></td>
+				<td data-label="Location"><?php echo $apartment['flat_location'] ?></td>
+				<td data-label="City"><?php echo $apartment['flat_city'] ?></td>
+				<td data-label="Availability"><?php if($apartment['available']==1){?> <a href="flat_details.php?id=<?php echo $apartment['flat_id'];?>">Show Details</a><?php } else{echo "NOT AVAILABLE"; } ?></td>
+				<td data-label="Owner"><?php echo $apartment['first_name'].' '.$apartment['last_name'] ?></td>
+				<td data-label="Action"><a href="reserve_flat.php?id=<?php echo $apartment['flat_id'];?>">Reserve Flat</a></td>
 			</tr><?php
 		}
 		?>
-		<style>
-			table {
-			    border-collapse: collapse;
-			    width: 100%;
-			}
-
-			th, td {
-			    padding: 8px;
-			    text-align: left;
-			    border-bottom: 1px solid #ddd;
-			}
-
-			tr:hover{background-color:#f5f5f5}
-		</style>
+		</tbody>
 	</table>
-
-		
-		 	
-
-	 </div> 
-
-	</body>
+	</div>
 </html>
