@@ -7,7 +7,7 @@
 	<html>
 	<head>
 		<meta charset="utf-8">
-		<title>HOME PORT </title>
+		<title>Tala Home</title>
 		<link rel="icon" type="image/gif" href="favicon.gif" />
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,6 +56,6 @@
 			</nav>
 		</header>
 	 
-		<h1 class='elegantshadow'>HOME PORT</h1>
+			<h1 class='elegantshadow'>Tala Home</h1>
 
 	 <div id="main-content" class="clearfix">

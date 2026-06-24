@@ -28,7 +28,7 @@
 		<thead>
 		<tr>
 			<th>ID</th>
-			<th>Apartment Size</th>
+			<th>Apartment Size (m2)</th>
 			<th>No. Of Rooms</th>
 			<th>Rent</th>
 			<th>Location</th>
@@ -44,7 +44,7 @@
 		?>
 			<tr>
 				<td data-label="ID"><?php echo $apartment['flat_id'] ?></td>
-				<td data-label="Apartment Size"><?php echo $apartment['flat_size'] ?></td>
+				<td data-label="Apartment Size (m2)"><?php echo $apartment['flat_size'] ?></td>
 				<td data-label="No. Of Rooms"><?php echo $apartment['num_of_rooms'] ?></td>
 				<td data-label="Rent"><?php echo $apartment['flat_rent'] ?></td>
 				<td data-label="Location"><?php echo $apartment['flat_location'] ?></td>

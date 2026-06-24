@@ -6,33 +6,20 @@
 <table style="border-collapse: collapse;width: 100%">
 		<tr>
 			
-			<th>Student Name</th>
-			<th>Student ID</th>
+			<th>Name</th>
+			
 			<th>Email</th>
 			
 		</tr>
 		
 			<tr>
 				
-				<td>Fazal Mahmud Niloy</td>
-				<td>1321579042</td>
-				<td>niloooy@gmail.com</td>
+				<td>Bottle</td>
+				
+				<td>mrboongvn@gmail.com</td>
 				
 			</tr>
-			<tr>
-				
-				<td>Md. Sakibul Alam</td>
-				<td>1420604042</td>
-				<td>sakibul.alam@northsouth.edu</td>
-				
-			</tr>
-			<tr>
-				
-				<td>Ashikur Rahman</td>
-				<td>1321409042</td>
-				<td>Ashikur.rahman13@northsouth.edu</td>
-				
-			</tr>
+			
 
 		<style>
 			table {

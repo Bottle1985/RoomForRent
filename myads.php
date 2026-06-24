@@ -18,7 +18,7 @@
 <table>
 		<tr>
 			<th>Serial No</th>
-			<th>Apartment Size</th>
+			<th>Apartment Size (m2)</th>
 			<th>No. Of Rooms</th>
 			<th>Rent</th>
 			<th>Location</th>
