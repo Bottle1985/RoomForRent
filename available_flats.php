@@ -46,7 +46,7 @@
 				<td data-label="ID"><?php echo $apartment['flat_id'] ?></td>
 				<td data-label="Apartment Size (m2)"><?php echo $apartment['flat_size'] ?></td>
 				<td data-label="No. Of Rooms"><?php echo $apartment['num_of_rooms'] ?></td>
-				<td data-label="Rent"><?php echo $apartment['flat_rent'] ?></td>
+				<td data-label="Rent"><?php echo number_format($apartment['flat_rent'], 0, ',', '.'); ?> VND</td>
 				<td data-label="Location"><?php echo $apartment['flat_location'] ?></td>
 				<td data-label="City"><?php echo $apartment['flat_city'] ?></td>
 				<td data-label="Availability"><?php if($apartment['available']==1){?> <a href="flat_details.php?id=<?php echo $apartment['flat_id'];?>">Show Details</a><?php } else{echo "NOT AVAILABLE"; } ?></td>

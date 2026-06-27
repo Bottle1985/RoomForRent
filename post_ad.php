@@ -33,7 +33,7 @@ if(!$_SESSION['id1370950_demo_cse311'])
 					<input id="text5" type="text" name="flat_location"/>
 				</p> 
 				<p>
-					<strong>Desired Rent</strong><br>
+					<strong>Desired Rent (VND)</strong><br>
 					<input id="text5" type="text" name="flat_rent"/>
 				</p>
 

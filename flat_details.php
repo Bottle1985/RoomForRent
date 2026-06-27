@@ -34,8 +34,8 @@
 					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['first_name'] . ' ' . $aptdetails['last_name']); ?></td>
 				</tr>
 				<tr>
-					<td style="background-color:#95a5a6; padding: 8px 10px;">Rent</td>
-					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['flat_rent']); ?></td>
+					<td style="background-color:#95a5a6; padding: 8px 10px;">Rent (VND)</td>
+					<td style="padding: 8px 10px;"><?php echo number_format($aptdetails['flat_rent'], 0, ',', '.'); ?> VND</td>
 				</tr>
 				<tr>
 					<td style="background-color:#95a5a6; padding: 8px 10px;">City</td>
