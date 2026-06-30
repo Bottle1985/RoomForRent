@@ -43,6 +43,7 @@
 
 				<p>
 					<strong>Flat Rent (VND)</strong><br> <!-- flat_rent -->
+					<input id="text5" type="number" name="flat_rent" value="<?php echo htmlspecialchars($aptdetails['flat_rent']); ?>"/>
 				</p>
 
 			</div>

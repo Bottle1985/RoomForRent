@@ -15,7 +15,8 @@
 		d.flat_size,d.num_of_rooms, d.additional_info 
 		FROM available_flats f 
 		join members m on m.member_id =f.owner_id 
-		join flat_details d on d.flat_id=f.flat_id");
+		join flat_details d on d.flat_id=f.flat_id
+		WHERE f.available = 1");
 	/*foreach ($apartments as $apartment ) {
 		print_r($apartment);
 		# code...
