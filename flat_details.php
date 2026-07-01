@@ -17,7 +17,7 @@
 
 
 	<div  ><strong> </strong>
-		<div >
+		<div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;">
 			<?php
 			$imageField = trim($aptdetails['image']);
 			if (!empty($imageField)) {
@@ -25,7 +25,7 @@
 				foreach ($images as $img) {
 					$img = trim($img);
 					if (!empty($img)) {
-						echo '<img style="height:auto;width:60%;margin-bottom:10px;" src="apartment_images/' . htmlspecialchars($img) . '" alt="Flat image">';
+						echo '<div style="flex: 1 1 calc(50% - 10px); max-width: calc(50% - 10px);"><img style="width:100%; height:auto; display:block;" src="apartment_images/' . htmlspecialchars($img) . '" alt="Flat image"></div>';
 					}
 				}
 			} else {
