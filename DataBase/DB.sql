@@ -122,18 +122,20 @@ INSERT INTO `members` (`member_id`, `username`, `first_name`, `last_name`, `pass
 
 CREATE TABLE `reserved_flats` (
   `flat_id` int(100) NOT NULL,
-  `bidder_username` varchar(100) NOT NULL
+  `bidder_username` varchar(100) NOT NULL,
+  `bidder_name` varchar(255) NOT NULL,
+  `bidder_contact` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `reserved_flats`
 --
 
-INSERT INTO `reserved_flats` (`flat_id`, `bidder_username`) VALUES
-(0, 'rafid'),
-(0, 'rafid'),
-(0, 'jun'),
-(0, 'm9');
+INSERT INTO `reserved_flats` (`flat_id`, `bidder_username`, `bidder_name`, `bidder_contact`) VALUES
+(0, 'rafid', 'rafid', ''),
+(0, 'rafid', 'rafid', ''),
+(0, 'jun', 'jun', ''),
+(0, 'm9', 'm9', '');
 
 --
 -- Indexes for dumped tables
