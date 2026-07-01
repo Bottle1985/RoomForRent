@@ -18,8 +18,20 @@
 
 	<div  ><strong> </strong>
 		<div >
-
-			<img style="height: auto;width: 60%;" src="apartment_images/<?php echo $aptdetails['image']?>">
+			<?php
+			$imageField = trim($aptdetails['image']);
+			if (!empty($imageField)) {
+				$images = explode(',', $imageField);
+				foreach ($images as $img) {
+					$img = trim($img);
+					if (!empty($img)) {
+						echo '<img style="height:auto;width:60%;margin-bottom:10px;" src="apartment_images/' . htmlspecialchars($img) . '" alt="Flat image">';
+					}
+				}
+			} else {
+				echo '<div>No images available for this flat.</div>';
+			}
+			?>
 
 		</div>
 		

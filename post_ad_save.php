@@ -3,32 +3,60 @@
 	include_once"connection.php";
 
 	//image prepare
+    $uploadedImages = array();
     if(isset($_FILES['image']))
     {
-        $errors =array();
-        $file_name=time().$_FILES['image']['name'];
-        $file_size=$_FILES['image']['size'];
-        $file_tmp= $_FILES['image']['tmp_name'];
-        $file_type = $_FILES['image']['type'];
-        $file_end=explode('.',$_FILES['image']['name']);
-        $file_ext= strtolower(end($file_end));
+        $errors = array();
+        $images = $_FILES['image'];
+        $count = is_array($images['name']) ? count($images['name']) : 1;
 
-        $formates =array('jpeg','jpg','png');
+        for ($i = 0; $i < $count; $i++) {
+            $file_name = is_array($images['name']) ? $images['name'][$i] : $images['name'];
+            $file_size = is_array($images['size']) ? $images['size'][$i] : $images['size'];
+            $file_tmp= is_array($images['tmp_name']) ? $images['tmp_name'][$i] : $images['tmp_name'];
+            $file_error = is_array($images['error']) ? $images['error'][$i] : $images['error'];
 
-        if (in_array($file_ext, $formates)==false)
-        {
-            $errors[]="please choose jpg or png files";
+            if ($file_error === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
 
+            if ($file_error !== UPLOAD_ERR_OK) {
+                $errors[] = "Upload error for file: " . htmlspecialchars($file_name);
+                continue;
+            }
+
+            $file_end=explode('.', $file_name);
+            $file_ext= strtolower(end($file_end));
+
+            $formates =array('jpeg','jpg','png');
+
+            if (in_array($file_ext, $formates)==false)
+            {
+                $errors[]="please choose jpg or png files";
+                continue;
+            }
+
+            if($file_size>3145728){
+                $errors[]="file is too large, file should be below 3 mb";
+                continue;
+            }
+
+            $safeName = time() . '_' . $i . '_' . basename($file_name);
+            if(move_uploaded_file($file_tmp,"apartment_images/".$safeName)){
+                $uploadedImages[] = $safeName;
+            } else {
+                $errors[] = "Failed to save uploaded file: " . htmlspecialchars($file_name);
+            }
         }
 
-        if($file_size>3145728){
-            $errors[]="file is too large, file should be below 3 mb";
+        if (!empty($uploadedImages)) {
+            $_POST['image'] = implode(',', $uploadedImages);
+        } else {
+            $_POST['image'] = '';
         }
 
-        if(empty($errors)==true){
-            move_uploaded_file($file_tmp,"apartment_images/".$file_name);
-            $_POST['image']=$file_name;
-        }else {print_r($errors);
+        if (!empty($errors)) {
+            print_r($errors);
         }
     }
 

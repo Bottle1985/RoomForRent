@@ -57,11 +57,19 @@
 					<input id="text5" type="text" name="num_of_rooms" value="<?php echo htmlspecialchars($aptdetails['num_of_rooms']); ?>"/>
 				</p>
 				<div>
-					<strong>Change Image</strong><br>
-    			<input type="file" name="image" id="image"><br>
-    			<?php if (!empty($aptdetails['image'])): ?>
-    				<span>Current image: <?php echo htmlspecialchars($aptdetails['image']); ?></span><br>
-    				<img src="apartment_images/<?php echo htmlspecialchars($aptdetails['image']); ?>" alt="Current flat image" style="max-width:100%; max-height:220px; margin-top:8px; border:1px solid #ccc; padding:4px;" />
+					<strong>Change Images</strong><br>
+					<input type="file" name="image[]" id="image" multiple><br>
+				<input type="hidden" name="current_images" value="<?php echo htmlspecialchars($aptdetails['image']); ?>">
+				<?php if (!empty($aptdetails['image'])): ?>
+					<span>Current images:</span><br>
+					<?php foreach (explode(',', $aptdetails['image']) as $currentImage): ?>
+						<?php $currentImage = trim($currentImage); if (!empty($currentImage)): ?>
+							<div style="margin-top:8px;">
+								<span><?php echo htmlspecialchars($currentImage); ?></span><br>
+								<img src="apartment_images/<?php echo htmlspecialchars($currentImage); ?>" alt="Current flat image" style="max-width:100%; max-height:120px; margin-top:4px; border:1px solid #ccc; padding:4px;" />
+							</div>
+						<?php endif; ?>
+					<?php endforeach; ?>
     			<?php else: ?>
     				<span>No current image available</span>
     			<?php endif; ?>
