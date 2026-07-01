@@ -29,7 +29,7 @@
 						if(isset($_SESSION['username'])) 
 							{ ?>
 						    	<li><a href="post_ad.php"><span class="glyphicon glyphicon-user"></span>Post AD!</a></li>
-
+					    <li><a href="my_reservations.php">My Reservations</a></li>
 							     <li><a href="userprofile.php">
 							      <?php
 							      
