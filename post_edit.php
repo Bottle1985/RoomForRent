@@ -56,8 +56,15 @@
 					<strong>Number of Rooms</strong><br> <!-- num_of_rooms -->
 					<input id="text5" type="text" name="num_of_rooms" value="<?php echo htmlspecialchars($aptdetails['num_of_rooms']); ?>"/>
 				</p>
-				<div><strong>Change Image</strong>
-    			<input type="file" name="image" id="image">
+				<div>
+					<strong>Change Image</strong><br>
+    			<input type="file" name="image" id="image"><br>
+    			<?php if (!empty($aptdetails['image'])): ?>
+    				<span>Current image: <?php echo htmlspecialchars($aptdetails['image']); ?></span><br>
+    				<img src="apartment_images/<?php echo htmlspecialchars($aptdetails['image']); ?>" alt="Current flat image" style="max-width:100%; max-height:220px; margin-top:8px; border:1px solid #ccc; padding:4px;" />
+    			<?php else: ?>
+    				<span>No current image available</span>
+    			<?php endif; ?>
     			</div>
 				<p>
 					<strong>Additional Informations</strong><br>

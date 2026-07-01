@@ -21,8 +21,8 @@
 
         }
 
-        if($file_size>2097152){
-            $errors[]="file is too large, file should be below 2 mb";
+        if($file_size>3145728){
+            $errors[]="file is too large, file should be below 3 mb";
         }
 
         if(empty($errors)==true){
