@@ -25,11 +25,8 @@
 	$aptdetails = mysqli_fetch_array($sqldetails,MYSQLI_BOTH);
 
 	$roomRent = isset($aptdetails['flat_rent']) ? (float)$aptdetails['flat_rent'] : 0;
-	$electricUnits = isset($_POST['electric_units']) ? (float)$_POST['electric_units'] : 0;
-	$waterUnits = isset($_POST['water_units']) ? (float)$_POST['water_units'] : 0;
-	$electricRate = isset($_POST['electric_rate']) ? (float)$_POST['electric_rate'] : 3800;
-	$waterRate = isset($_POST['water_rate']) ? (float)$_POST['water_rate'] : 35000;
-	$monthlyTotal = $roomRent + ($electricUnits * $electricRate) + ($waterUnits * $waterRate);
+	$electricRate = isset($_POST['electric_rate']) ? (float)$_POST['electric_rate'] : 5000;
+	$waterRate = isset($_POST['water_rate']) ? (float)$_POST['water_rate'] : 15000;
 
 	$meterSavedMessage = '';
 	$meterMonthValue = isset($_POST['meter_month']) ? trim($_POST['meter_month']) : '';
@@ -60,6 +57,28 @@
 
 	$meterHistorySql = "SELECT month_label, electric_reading, water_reading, created_at FROM meter_readings WHERE flat_id='$apt_id' ORDER BY month_label DESC";
 	$meterHistory = mysqli_query($con, $meterHistorySql);
+	$meterHistoryRows = array();
+	while ($meterRow = mysqli_fetch_assoc($meterHistory)) {
+		$meterHistoryRows[] = $meterRow;
+	}
+
+	$latestMeterReading = !empty($meterHistoryRows) ? $meterHistoryRows[0] : null;
+	$previousMeterReading = count($meterHistoryRows) > 1 ? $meterHistoryRows[1] : null;
+	$autoElectricUnits = 0;
+	$autoWaterUnits = 0;
+	if ($latestMeterReading !== null) {
+		$autoElectricUnits = (float)$latestMeterReading['electric_reading'];
+		$autoWaterUnits = (float)$latestMeterReading['water_reading'];
+		if ($previousMeterReading !== null) {
+			$autoElectricUnits = max(0, (float)$latestMeterReading['electric_reading'] - (float)$previousMeterReading['electric_reading']);
+			$autoWaterUnits = max(0, (float)$latestMeterReading['water_reading'] - (float)$previousMeterReading['water_reading']);
+		}
+	}
+
+	$electricUnits = isset($_POST['electric_units']) && trim($_POST['electric_units']) !== '' ? (float)$_POST['electric_units'] : $autoElectricUnits;
+	$waterUnits = isset($_POST['water_units']) && trim($_POST['water_units']) !== '' ? (float)$_POST['water_units'] : $autoWaterUnits;
+	$monthlyTotal = $roomRent + ($electricUnits * $electricRate) + ($waterUnits * $waterRate);
+	$showBillingResult = $_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['calculate_bill']) || isset($_POST['save_meter_reading']));
 
 ?>
 
@@ -142,7 +161,7 @@
 				</div>
 			</form>
 
-			<?php if ($meterHistory && mysqli_num_rows($meterHistory) > 0): ?>
+			<?php if (!empty($meterHistoryRows)): ?>
 				<div style="margin-top:12px;">
 					<strong>Lịch sử đồng hồ</strong>
 					<table class="tblclss" style="border-collapse: collapse; width: 100%; margin-top:8px;">
@@ -151,13 +170,13 @@
 							<th style="background-color:#95a5a6; padding:8px 10px;">Điện</th>
 							<th style="background-color:#95a5a6; padding:8px 10px;">Nước</th>
 						</tr>
-						<?php while ($meterRow = mysqli_fetch_assoc($meterHistory)): ?>
+						<?php foreach ($meterHistoryRows as $meterRow): ?>
 						<tr>
 							<td style="padding:8px 10px;"><?php echo htmlspecialchars($meterRow['month_label']); ?></td>
 							<td style="padding:8px 10px;"><?php echo htmlspecialchars($meterRow['electric_reading']); ?></td>
 							<td style="padding:8px 10px;"><?php echo htmlspecialchars($meterRow['water_reading']); ?></td>
 						</tr>
-						<?php endwhile; ?>
+						<?php endforeach; ?>
 					</table>
 				</div>
 			<?php else: ?>
@@ -167,7 +186,9 @@
 
 		<div style="margin-top:20px; padding:15px; border:1px solid #ddd; background:#f9f9f9;">
 			<h3 style="margin-top:0;">Tính tiền phòng hàng tháng</h3>
+			<div style="margin-bottom:10px; color:#555;">Nếu đã lưu chỉ số đồng hồ, hệ thống sẽ tự động lấy lượng điện/nước dùng tháng gần nhất so với tháng trước.</div>
 			<form method="post" action="flat_details.php?id=<?php echo htmlspecialchars($apt_id); ?>" style="display:flex; flex-wrap:wrap; gap:12px; align-items:end;">
+				<input type="hidden" name="calculate_bill" value="1">
 				<div>
 					<label><strong>Số điện (kWh)</strong><br>
 					<input type="number" step="0.1" name="electric_units" value="<?php echo htmlspecialchars(isset($_POST['electric_units']) ? $_POST['electric_units'] : ''); ?>" style="min-width:120px;" /></label>
@@ -178,21 +199,22 @@
 				</div>
 				<div>
 					<label><strong>Giá điện (VND/kWh)</strong><br>
-					<input type="number" step="100" name="electric_rate" value="<?php echo htmlspecialchars(isset($_POST['electric_rate']) ? $_POST['electric_rate'] : '3800'); ?>" style="min-width:140px;" /></label>
+					<input type="number" step="100" name="electric_rate" value="<?php echo htmlspecialchars(isset($_POST['electric_rate']) ? $_POST['electric_rate'] : '5000'); ?>" style="min-width:140px;" /></label>
 				</div>
 				<div>
 					<label><strong>Giá nước (VND/m3)</strong><br>
-					<input type="number" step="100" name="water_rate" value="<?php echo htmlspecialchars(isset($_POST['water_rate']) ? $_POST['water_rate'] : '35000'); ?>" style="min-width:140px;" /></label>
+					<input type="number" step="100" name="water_rate" value="<?php echo htmlspecialchars(isset($_POST['water_rate']) ? $_POST['water_rate'] : '15000'); ?>" style="min-width:140px;" /></label>
 				</div>
 				<div>
 					<button type="submit" class="button submit">Tính tiền</button>
 				</div>
 			</form>
 
-			<?php if ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
+			<?php if ($showBillingResult): ?>
 				<div style="margin-top:12px; padding:10px; background:#ffffff; border-left:4px solid #2c7be5;">
 					<strong>Tổng tiền tháng này:</strong> <?php echo number_format($monthlyTotal, 0, ',', '.'); ?> VND<br>
-					Phòng: <?php echo number_format($roomRent, 0, ',', '.'); ?> VND + Điện: <?php echo number_format($electricUnits * $electricRate, 0, ',', '.'); ?> VND + Nước: <?php echo number_format($waterUnits * $waterRate, 0, ',', '.'); ?> VND
+					Phòng: <?php echo number_format($roomRent, 0, ',', '.'); ?> VND + Điện: <?php echo number_format($electricUnits * $electricRate, 0, ',', '.'); ?> VND + Nước: <?php echo number_format($waterUnits * $waterRate, 0, ',', '.'); ?> VND<br>
+					Số điện dùng: <?php echo number_format($electricUnits, 2, ',', '.'); ?> kWh | Số nước dùng: <?php echo number_format($waterUnits, 2, ',', '.'); ?> m3
 				</div>
 			<?php endif; ?>
 		</div>
