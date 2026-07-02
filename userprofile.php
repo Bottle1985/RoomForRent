@@ -47,6 +47,7 @@
 	$meterMonthValue = isset($_POST['meter_month']) ? trim($_POST['meter_month']) : '';
 	$meterElectricValue = isset($_POST['electric_reading']) ? trim($_POST['electric_reading']) : '';
 	$meterWaterValue = isset($_POST['water_reading']) ? trim($_POST['water_reading']) : '';
+	$editMeterId = isset($_POST['edit_meter_id']) ? intval($_POST['edit_meter_id']) : 0;
 
 	if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_meter_reading']) && $selectedFlatId > 0) {
 		$meterMonth = isset($_POST['meter_month']) ? trim($_POST['meter_month']) : '';
@@ -57,13 +58,22 @@
 			$meterMonthEsc = mysqli_real_escape_string($con, $meterMonth);
 			$meterElectricEsc = mysqli_real_escape_string($con, $meterElectric);
 			$meterWaterEsc = mysqli_real_escape_string($con, $meterWater);
-			$saveMeterSql = "INSERT INTO meter_readings (flat_id, month_label, electric_reading, water_reading)
-				VALUES ('$selectedFlatId', '$meterMonthEsc', '$meterElectricEsc', '$meterWaterEsc')
-				ON DUPLICATE KEY UPDATE electric_reading='$meterElectricEsc', water_reading='$meterWaterEsc'";
-			if (mysqli_query($con, $saveMeterSql)) {
-				$meterSavedMessage = 'Đã lưu chỉ số đồng hồ cho tháng ' . htmlspecialchars($meterMonth) . '.';
+			if ($editMeterId > 0) {
+				$saveMeterSql = "UPDATE meter_readings SET month_label='$meterMonthEsc', electric_reading='$meterElectricEsc', water_reading='$meterWaterEsc' WHERE id='$editMeterId' AND flat_id='$selectedFlatId'";
+				if (mysqli_query($con, $saveMeterSql)) {
+					$meterSavedMessage = 'Đã cập nhật chỉ số đồng hồ cho tháng ' . htmlspecialchars($meterMonth) . '.';
+				} else {
+					$meterSavedMessage = 'Không thể cập nhật chỉ số đồng hồ.';
+				}
 			} else {
-				$meterSavedMessage = 'Không thể lưu chỉ số đồng hồ.';
+				$saveMeterSql = "INSERT INTO meter_readings (flat_id, month_label, electric_reading, water_reading)
+					VALUES ('$selectedFlatId', '$meterMonthEsc', '$meterElectricEsc', '$meterWaterEsc')
+					ON DUPLICATE KEY UPDATE electric_reading='$meterElectricEsc', water_reading='$meterWaterEsc'";
+				if (mysqli_query($con, $saveMeterSql)) {
+					$meterSavedMessage = 'Đã lưu chỉ số đồng hồ cho tháng ' . htmlspecialchars($meterMonth) . '.';
+				} else {
+					$meterSavedMessage = 'Không thể lưu chỉ số đồng hồ.';
+				}
 			}
 		} else {
 			$meterSavedMessage = 'Vui lòng nhập tháng.';
@@ -72,7 +82,7 @@
 
 	$meterHistoryRows = array();
 	if ($selectedFlatId > 0) {
-		$meterHistorySql = "SELECT month_label, electric_reading, water_reading FROM meter_readings WHERE flat_id='$selectedFlatId' ORDER BY month_label DESC";
+		$meterHistorySql = "SELECT id, month_label, electric_reading, water_reading FROM meter_readings WHERE flat_id='$selectedFlatId' ORDER BY month_label DESC";
 		$meterHistory = mysqli_query($con, $meterHistorySql);
 		while ($meterRow = mysqli_fetch_assoc($meterHistory)) {
 			$meterHistoryRows[] = $meterRow;
@@ -142,6 +152,9 @@
 						<form method="post" action="userprofile.php" style="display:flex; flex-wrap:wrap; gap:12px; align-items:end; margin-bottom:15px;">
 							<input type="hidden" name="flat_id" value="<?php echo htmlspecialchars($selectedFlatId); ?>">
 							<input type="hidden" name="save_meter_reading" value="1">
+							<?php if ($editMeterId > 0): ?>
+								<input type="hidden" name="edit_meter_id" value="<?php echo htmlspecialchars($editMeterId); ?>">
+							<?php endif; ?>
 							<div>
 								<label><strong>Tháng</strong><br>
 								<input type="month" name="meter_month" value="<?php echo htmlspecialchars($meterMonthValue); ?>" style="min-width:150px;" /></label>
@@ -189,6 +202,16 @@
 										<td style="padding:8px 10px;"><?php echo htmlspecialchars($meterRow['month_label']); ?></td>
 										<td style="padding:8px 10px;"><?php echo htmlspecialchars($meterRow['electric_reading']); ?></td>
 										<td style="padding:8px 10px;"><?php echo htmlspecialchars($meterRow['water_reading']); ?></td>
+										<td style="padding:8px 10px;">
+											<form method="post" action="userprofile.php" style="display:inline;">
+												<input type="hidden" name="flat_id" value="<?php echo htmlspecialchars($selectedFlatId); ?>">
+												<input type="hidden" name="edit_meter_id" value="<?php echo (int)$meterRow['id']; ?>">
+												<input type="hidden" name="meter_month" value="<?php echo htmlspecialchars($meterRow['month_label']); ?>">
+												<input type="hidden" name="electric_reading" value="<?php echo htmlspecialchars($meterRow['electric_reading']); ?>">
+												<input type="hidden" name="water_reading" value="<?php echo htmlspecialchars($meterRow['water_reading']); ?>">
+												<button type="submit" class="button submit">Sửa</button>
+											</form>
+										</td>
 									</tr>
 									<?php endforeach; ?>
 								</table>
