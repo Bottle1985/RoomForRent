@@ -37,11 +37,16 @@
 		month_label VARCHAR(20) NOT NULL,
 		electric_reading DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 		water_reading DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+		rent_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		PRIMARY KEY (id),
 		UNIQUE KEY flat_month_unique (flat_id, month_label)
 	) ENGINE=InnoDB DEFAULT CHARSET=latin1";
 	mysqli_query($con, $meterTableSql);
+	$columnCheck = mysqli_query($con, "SHOW COLUMNS FROM meter_readings LIKE 'rent_amount'");
+	if (!$columnCheck || mysqli_num_rows($columnCheck) === 0) {
+		mysqli_query($con, "ALTER TABLE meter_readings ADD rent_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00");
+	}
 
 	$meterSavedMessage = '';
 	$meterMonthValue = isset($_POST['meter_month']) ? trim($_POST['meter_month']) : '';
@@ -53,22 +58,39 @@
 		$meterMonth = isset($_POST['meter_month']) ? trim($_POST['meter_month']) : '';
 		$meterElectric = isset($_POST['electric_reading']) ? (float)$_POST['electric_reading'] : 0;
 		$meterWater = isset($_POST['water_reading']) ? (float)$_POST['water_reading'] : 0;
+		$roomRent = $selectedFlat ? (float)$selectedFlat['flat_rent'] : 0;
+		$electricRate = 5000;
+		$waterRate = 15000;
 
 		if ($meterMonth !== '') {
 			$meterMonthEsc = mysqli_real_escape_string($con, $meterMonth);
 			$meterElectricEsc = mysqli_real_escape_string($con, $meterElectric);
 			$meterWaterEsc = mysqli_real_escape_string($con, $meterWater);
+
+			$prevUnitsSql = "SELECT electric_reading, water_reading FROM meter_readings WHERE flat_id='$selectedFlatId' AND month_label < '$meterMonthEsc' ORDER BY month_label DESC LIMIT 1";
+			$prevUnitsResult = mysqli_query($con, $prevUnitsSql);
+			$prevMeter = mysqli_fetch_assoc($prevUnitsResult);
+			if ($prevMeter) {
+				$electricUnits = max(0, $meterElectric - (float)$prevMeter['electric_reading']);
+				$waterUnits = max(0, $meterWater - (float)$prevMeter['water_reading']);
+			} else {
+				$electricUnits = max(0, $meterElectric);
+				$waterUnits = max(0, $meterWater);
+			}
+			$rentAmount = $roomRent + ($electricUnits * $electricRate) + ($waterUnits * $waterRate);
+			$rentAmountEsc = mysqli_real_escape_string($con, $rentAmount);
+
 			if ($editMeterId > 0) {
-				$saveMeterSql = "UPDATE meter_readings SET month_label='$meterMonthEsc', electric_reading='$meterElectricEsc', water_reading='$meterWaterEsc' WHERE id='$editMeterId' AND flat_id='$selectedFlatId'";
+				$saveMeterSql = "UPDATE meter_readings SET month_label='$meterMonthEsc', electric_reading='$meterElectricEsc', water_reading='$meterWaterEsc', rent_amount='$rentAmountEsc' WHERE id='$editMeterId' AND flat_id='$selectedFlatId'";
 				if (mysqli_query($con, $saveMeterSql)) {
 					$meterSavedMessage = 'Đã cập nhật chỉ số đồng hồ cho tháng ' . htmlspecialchars($meterMonth) . '.';
 				} else {
 					$meterSavedMessage = 'Không thể cập nhật chỉ số đồng hồ.';
 				}
 			} else {
-				$saveMeterSql = "INSERT INTO meter_readings (flat_id, month_label, electric_reading, water_reading)
-					VALUES ('$selectedFlatId', '$meterMonthEsc', '$meterElectricEsc', '$meterWaterEsc')
-					ON DUPLICATE KEY UPDATE electric_reading='$meterElectricEsc', water_reading='$meterWaterEsc'";
+				$saveMeterSql = "INSERT INTO meter_readings (flat_id, month_label, electric_reading, water_reading, rent_amount)
+					VALUES ('$selectedFlatId', '$meterMonthEsc', '$meterElectricEsc', '$meterWaterEsc', '$rentAmountEsc')
+					ON DUPLICATE KEY UPDATE electric_reading='$meterElectricEsc', water_reading='$meterWaterEsc', rent_amount='$rentAmountEsc'";
 				if (mysqli_query($con, $saveMeterSql)) {
 					$meterSavedMessage = 'Đã lưu chỉ số đồng hồ cho tháng ' . htmlspecialchars($meterMonth) . '.';
 				} else {
@@ -82,7 +104,7 @@
 
 	$meterHistoryRows = array();
 	if ($selectedFlatId > 0) {
-		$meterHistorySql = "SELECT id, month_label, electric_reading, water_reading FROM meter_readings WHERE flat_id='$selectedFlatId' ORDER BY month_label DESC";
+		$meterHistorySql = "SELECT id, month_label, electric_reading, water_reading, rent_amount FROM meter_readings WHERE flat_id='$selectedFlatId' ORDER BY month_label DESC";
 		$meterHistory = mysqli_query($con, $meterHistorySql);
 		while ($meterRow = mysqli_fetch_assoc($meterHistory)) {
 			$meterHistoryRows[] = $meterRow;
@@ -168,21 +190,6 @@
 							</div>
 						</form>
 
-						<form method="post" action="userprofile.php" style="display:flex; flex-wrap:wrap; gap:12px; align-items:end; margin-bottom:15px;">
-							<input type="hidden" name="flat_id" value="<?php echo htmlspecialchars($selectedFlatId); ?>">
-							<input type="hidden" name="calculate_bill" value="1">
-							<div>
-								<label><strong>Giá điện (VND/kWh)</strong><br>
-								<input type="number" step="100" name="electric_rate" value="<?php echo htmlspecialchars(isset($_POST['electric_rate']) ? $_POST['electric_rate'] : '5000'); ?>" style="min-width:140px;" /></label>
-							</div>
-							<div>
-								<label><strong>Giá nước (VND/m3)</strong><br>
-								<input type="number" step="100" name="water_rate" value="<?php echo htmlspecialchars(isset($_POST['water_rate']) ? $_POST['water_rate'] : '15000'); ?>" style="min-width:140px;" /></label>
-							</div>
-							<div>
-								<button type="submit" class="button submit">Tính tiền</button>
-							</div>
-						</form>
 
 						<?php if (!empty($meterHistoryRows)): ?>
 							<div style="margin-top:12px;">
@@ -190,12 +197,15 @@
 								<table class="tblclss" style="border-collapse: collapse; width: 100%; margin-top:8px;">
 									<tr>
 										<th style="background-color:#95a5a6; padding:8px 10px;">Tháng</th>
+										<th style="background-color:#95a5a6; padding:8px 10px;">Tiền thuê</th>
 										<th style="background-color:#95a5a6; padding:8px 10px;">Điện</th>
 										<th style="background-color:#95a5a6; padding:8px 10px;">Nước</th>
+										<th style="background-color:#95a5a6; padding:8px 10px;">Action</th>
 									</tr>
 									<?php foreach ($meterHistoryRows as $meterRow): ?>
 									<tr>
 										<td style="padding:8px 10px;"><?php echo htmlspecialchars($meterRow['month_label']); ?></td>
+										<td style="padding:8px 10px;"><?php echo number_format($meterRow['rent_amount'], 0, ',', '.'); ?> VND</td>
 										<td style="padding:8px 10px;"><?php echo htmlspecialchars($meterRow['electric_reading']); ?></td>
 										<td style="padding:8px 10px;"><?php echo htmlspecialchars($meterRow['water_reading']); ?></td>
 										<td style="padding:8px 10px;">
