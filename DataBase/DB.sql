@@ -85,6 +85,28 @@ INSERT INTO `flat_details` (`flat_id`, `flat_city`, `flat_location`, `flat_size`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `meter_readings`
+--
+
+CREATE TABLE `meter_readings` (
+  `id` int(100) NOT NULL,
+  `flat_id` int(100) NOT NULL,
+  `month_label` varchar(20) NOT NULL,
+  `electric_reading` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `water_reading` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `meter_readings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `flat_month_unique` (`flat_id`,`month_label`);
+
+ALTER TABLE `meter_readings`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `members`
 --
 
