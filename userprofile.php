@@ -14,7 +14,7 @@
 	$selectedFlatId = isset($_POST['flat_id']) ? intval($_POST['flat_id']) : 0;
 	$myFlats = array();
 	if ($memberId > 0) {
-		$flatQuery = mysqli_query($con, "SELECT flat_id, flat_city, flat_location, flat_rent FROM available_flats WHERE owner_id='$memberId' ORDER BY flat_id DESC");
+		$flatQuery = mysqli_query($con, "SELECT f.flat_id, f.flat_city, f.flat_location, f.flat_rent, d.additional_info FROM available_flats f LEFT JOIN flat_details d ON d.flat_id = f.flat_id WHERE f.owner_id='$memberId' ORDER BY f.flat_id DESC");
 		while ($flatRow = mysqli_fetch_assoc($flatQuery)) {
 			$myFlats[] = $flatRow;
 		}
@@ -132,22 +132,18 @@
 						<label><strong>Chọn phòng</strong><br>
 						<select name="flat_id" onchange="this.form.submit()">
 							<?php foreach ($myFlats as $flatRow): ?>
-								<option value="<?php echo (int)$flatRow['flat_id']; ?>" <?php if ($selectedFlatId === (int)$flatRow['flat_id']) echo 'selected'; ?>><?php echo htmlspecialchars($flatRow['flat_city'] . ' - ' . $flatRow['flat_location']); ?></option>
-							<?php endforeach; ?>
-						</select></label>
-					</form>
+							<option value="<?php echo (int)$flatRow['flat_id']; ?>" <?php if ($selectedFlatId === (int)$flatRow['flat_id']) echo 'selected'; ?>><?php echo htmlspecialchars($flatRow['flat_location'] . ' - ' . $flatRow['additional_info']); ?></option>
+						<?php endforeach; ?>
+					</select></label>
+				</form>
 
-					<?php if ($selectedFlat !== null): ?>
-						<div style="margin-bottom:15px; padding:10px; background:#fff; border:1px solid #ddd;">
-							<strong>Phòng đã chọn:</strong> <?php echo htmlspecialchars($selectedFlat['flat_city'] . ' - ' . $selectedFlat['flat_location']); ?><br>
-							<strong>Giá phòng:</strong> <?php echo number_format($roomRent, 0, ',', '.'); ?> VND
-						</div>
-
-						<?php if ($meterSavedMessage !== ''): ?>
+				<?php if ($selectedFlat !== null): ?>
+					<div style="margin-bottom:15px; padding:10px; background:#fff; border:1px solid #ddd;">
+						<strong>Phòng đã chọn:</strong> <?php echo htmlspecialchars($selectedFlat['flat_location'] . ' - ' . $selectedFlat['additional_info']); ?><br>
 							<div style="margin-bottom:10px; padding:8px 10px; background:#eaf7ea; border:1px solid #c7e6c7; color:#1f5a1f;">
 								<?php echo htmlspecialchars($meterSavedMessage); ?>
 							</div>
-						<?php endif; ?>
+					</div>
 
 						<form method="post" action="userprofile.php" style="display:flex; flex-wrap:wrap; gap:12px; align-items:end; margin-bottom:15px;">
 							<input type="hidden" name="flat_id" value="<?php echo htmlspecialchars($selectedFlatId); ?>">
