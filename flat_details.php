@@ -12,6 +12,12 @@
 	/*print_r($sqldetails);*/
 	$aptdetails = mysqli_fetch_array($sqldetails,MYSQLI_BOTH);
 
+	$roomRent = isset($aptdetails['flat_rent']) ? (float)$aptdetails['flat_rent'] : 0;
+	$electricUnits = isset($_POST['electric_units']) ? (float)$_POST['electric_units'] : 0;
+	$waterUnits = isset($_POST['water_units']) ? (float)$_POST['water_units'] : 0;
+	$electricRate = isset($_POST['electric_rate']) ? (float)$_POST['electric_rate'] : 3800;
+	$waterRate = isset($_POST['water_rate']) ? (float)$_POST['water_rate'] : 35000;
+	$monthlyTotal = $roomRent + ($electricUnits * $electricRate) + ($waterUnits * $waterRate);
 
 ?>
 
@@ -66,6 +72,38 @@
 					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['additional_info']); ?></td>
 				</tr>
 			</table>
+		</div>
+
+		<div style="margin-top:20px; padding:15px; border:1px solid #ddd; background:#f9f9f9;">
+			<h3 style="margin-top:0;">Tính tiền phòng hàng tháng</h3>
+			<form method="post" action="flat_details.php?id=<?php echo htmlspecialchars($apt_id); ?>" style="display:flex; flex-wrap:wrap; gap:12px; align-items:end;">
+				<div>
+					<label><strong>Số điện (kWh)</strong><br>
+					<input type="number" step="0.1" name="electric_units" value="<?php echo htmlspecialchars(isset($_POST['electric_units']) ? $_POST['electric_units'] : ''); ?>" style="min-width:120px;" /></label>
+				</div>
+				<div>
+					<label><strong>Số nước (m3)</strong><br>
+					<input type="number" step="0.1" name="water_units" value="<?php echo htmlspecialchars(isset($_POST['water_units']) ? $_POST['water_units'] : ''); ?>" style="min-width:120px;" /></label>
+				</div>
+				<div>
+					<label><strong>Giá điện (VND/kWh)</strong><br>
+					<input type="number" step="100" name="electric_rate" value="<?php echo htmlspecialchars(isset($_POST['electric_rate']) ? $_POST['electric_rate'] : '3800'); ?>" style="min-width:140px;" /></label>
+				</div>
+				<div>
+					<label><strong>Giá nước (VND/m3)</strong><br>
+					<input type="number" step="100" name="water_rate" value="<?php echo htmlspecialchars(isset($_POST['water_rate']) ? $_POST['water_rate'] : '35000'); ?>" style="min-width:140px;" /></label>
+				</div>
+				<div>
+					<button type="submit" class="button submit">Tính tiền</button>
+				</div>
+			</form>
+
+			<?php if ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
+				<div style="margin-top:12px; padding:10px; background:#ffffff; border-left:4px solid #2c7be5;">
+					<strong>Tổng tiền tháng này:</strong> <?php echo number_format($monthlyTotal, 0, ',', '.'); ?> VND<br>
+					Phòng: <?php echo number_format($roomRent, 0, ',', '.'); ?> VND + Điện: <?php echo number_format($electricUnits * $electricRate, 0, ',', '.'); ?> VND + Nước: <?php echo number_format($waterUnits * $waterRate, 0, ',', '.'); ?> VND
+				</div>
+			<?php endif; ?>
 		</div>
 	</div>
 
