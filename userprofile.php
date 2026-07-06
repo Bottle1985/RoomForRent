@@ -257,7 +257,9 @@
 
 						<?php if ($showBillingResult): ?>
 							<div style="margin-top:12px; padding:10px; background:#ffffff; border-left:4px solid #2c7be5;">
-								<strong>Tổng tiền tháng này<?php echo $billingMonthLabel !== '' ? ' (' . htmlspecialchars($billingMonthLabel) . ')' : ''; ?>:</strong> <?php echo number_format($monthlyTotal, 0, ',', '.'); ?> VND<br>
+								<strong>Tổng tiền tháng này<?php echo $billingMonthLabel !== '' ? ' (' . htmlspecialchars($billingMonthLabel) . ')' : ''; ?>:</strong> <?php echo number_format($monthlyTotal, 0, ',', '.'); ?> VND
+								<button type="button" onclick="copyTotalAmount()" style="margin-left:10px; padding:5px 10px; font-size:12px; background:#3498db; color:white; border:none; border-radius:3px; cursor:pointer;">Copy</button>
+								<br>
 								Phòng: <?php echo number_format($roomRent, 0, ',', '.'); ?> VND + Điện: <?php echo number_format($electricUnits * $electricRate, 0, ',', '.'); ?> VND + Nước: <?php echo number_format($waterUnits * $waterRate, 0, ',', '.'); ?> VND<br>
 								Số điện dùng: <?php echo number_format($electricUnits, 2, ',', '.'); ?> kWh | Số nước dùng: <?php echo number_format($waterUnits, 2, ',', '.'); ?> m3
 							</div>
@@ -268,5 +270,38 @@
 
 	</div> 
 
+	<script>
+	function copyTotalAmount() {
+		// Get the billing values from PHP
+		var monthLabel = "<?php echo $billingMonthLabel; ?>";
+		var roomRent = <?php echo $roomRent; ?>;
+		var electricUnits = <?php echo $electricUnits; ?>;
+		var waterUnits = <?php echo $waterUnits; ?>;
+		var electricRate = <?php echo $electricRate; ?>;
+		var waterRate = <?php echo $waterRate; ?>;
+		var monthlyTotal = <?php echo $monthlyTotal; ?>;
+		
+		// Format the text
+		var textToCopy = "Tổng tiền tháng " + monthLabel + ":\n" +
+			"Phòng: " + roomRent.toLocaleString('vi-VN') + " VND\n" +
+			"Điện: " + (electricUnits * electricRate).toLocaleString('vi-VN') + " VND (" + electricUnits + " kWh x " + electricRate.toLocaleString('vi-VN') + " VND/kWh)\n" +
+			"Nước: " + (waterUnits * waterRate).toLocaleString('vi-VN') + " VND (" + waterUnits + " m3 x " + waterRate.toLocaleString('vi-VN') + " VND/m3)\n" +
+			"Tổng cộng: " + monthlyTotal.toLocaleString('vi-VN') + " VND";
+		
+		// Copy to clipboard
+		navigator.clipboard.writeText(textToCopy).then(function() {
+			alert("Đã sao chép: " + monthlyTotal.toLocaleString('vi-VN') + " VND");
+		}).catch(function(err) {
+			// Fallback for older browsers
+			var textarea = document.createElement("textarea");
+			textarea.value = textToCopy;
+			document.body.appendChild(textarea);
+			textarea.select();
+			document.execCommand("copy");
+			document.body.removeChild(textarea);
+			alert("Đã sao chép: " + monthlyTotal.toLocaleString('vi-VN') + " VND");
+		});
+	}
+	</script>
 	</body>
 </html>
