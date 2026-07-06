@@ -126,12 +126,17 @@
 	}
 
 	$roomRent = $selectedFlat ? (float)$selectedFlat['flat_rent'] : 0;
-	$electricRate = isset($_POST['electric_rate']) ? (float)$_POST['electric_rate'] : 5000;
-	$waterRate = isset($_POST['water_rate']) ? (float)$_POST['water_rate'] : 15000;
 	$latestMeterReading = !empty($meterHistoryRows) ? $meterHistoryRows[0] : null;
 	$previousMeterReading = count($meterHistoryRows) > 1 ? $meterHistoryRows[1] : null;
+	$electricRate = $latestMeterReading !== null ? (float)$latestMeterReading['electric_rate'] : 5000;
+	$waterRate = $latestMeterReading !== null ? (float)$latestMeterReading['water_rate'] : 15000;
+	if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$latestMeterReading) {
+		$electricRate = isset($_POST['electric_rate']) ? (float)$_POST['electric_rate'] : $electricRate;
+		$waterRate = isset($_POST['water_rate']) ? (float)$_POST['water_rate'] : $waterRate;
+	}
 	$autoElectricUnits = 0;
 	$autoWaterUnits = 0;
+	$billingMonthLabel = $latestMeterReading !== null ? $latestMeterReading['month_label'] : '';
 	if ($latestMeterReading !== null) {
 		$autoElectricUnits = (float)$latestMeterReading['electric_reading'];
 		$autoWaterUnits = (float)$latestMeterReading['water_reading'];
@@ -143,7 +148,7 @@
 	$electricUnits = isset($_POST['electric_units']) && trim($_POST['electric_units']) !== '' ? (float)$_POST['electric_units'] : $autoElectricUnits;
 	$waterUnits = isset($_POST['water_units']) && trim($_POST['water_units']) !== '' ? (float)$_POST['water_units'] : $autoWaterUnits;
 	$monthlyTotal = $roomRent + ($electricUnits * $electricRate) + ($waterUnits * $waterRate);
-	$showBillingResult = $_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['calculate_bill']) || isset($_POST['save_meter_reading']));
+	$showBillingResult = $selectedFlat !== null;
 
 ?>
 			<div align="center">
@@ -252,7 +257,7 @@
 
 						<?php if ($showBillingResult): ?>
 							<div style="margin-top:12px; padding:10px; background:#ffffff; border-left:4px solid #2c7be5;">
-								<strong>Tổng tiền tháng này:</strong> <?php echo number_format($monthlyTotal, 0, ',', '.'); ?> VND<br>
+								<strong>Tổng tiền tháng này<?php echo $billingMonthLabel !== '' ? ' (' . htmlspecialchars($billingMonthLabel) . ')' : ''; ?>:</strong> <?php echo number_format($monthlyTotal, 0, ',', '.'); ?> VND<br>
 								Phòng: <?php echo number_format($roomRent, 0, ',', '.'); ?> VND + Điện: <?php echo number_format($electricUnits * $electricRate, 0, ',', '.'); ?> VND + Nước: <?php echo number_format($waterUnits * $waterRate, 0, ',', '.'); ?> VND<br>
 								Số điện dùng: <?php echo number_format($electricUnits, 2, ',', '.'); ?> kWh | Số nước dùng: <?php echo number_format($waterUnits, 2, ',', '.'); ?> m3
 							</div>
