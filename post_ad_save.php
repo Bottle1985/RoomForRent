@@ -115,9 +115,11 @@
 
 ?>
 
-		<div style="width: 70%; margin: 0 auto;">
-			<div><img src="images/success.png" alt="Success Icon" style="float: left;width: 25%;"/></div>
-			<div><h1 style="float: right; font-size: 1.5em;">Your Ad Posted Successfully!</h1></div>
+		<div style="width: 70%; margin: 0 auto; padding: 20px;">
+			<div style="text-align: center;">
+				<h2 style="color: #28a745; font-size: 2em;">✓ Your Ad Posted Successfully!</h2>
+				<p style="color: #666; margin-top: 10px;">Your apartment listing is now live.</p>
+			</div>
 		</div>
 
 		<?php
