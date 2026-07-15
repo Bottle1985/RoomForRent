@@ -69,6 +69,13 @@
 		</div>
 
 		<div style="margin-top: 20px;">
+			<a class="button submit" href="reserve_flat.php?id=<?php echo $apt_id; ?>">Reserve this flat</a>
+			<?php if (!isset($_SESSION['username'])): ?>
+				<p style="margin-top: 8px;">You can reserve this flat without creating an account. Please provide your name and contact number.</p>
+			<?php endif; ?>
+		</div>
+
+		<div style="margin-top: 20px;">
 			<h3 style="margin-bottom: 10px;">Current Guests</h3>
 			<?php if ($guestQuery && mysqli_num_rows($guestQuery) > 0): ?>
 				<table class="tblclss" style="border-collapse: collapse; width: 100%;">
