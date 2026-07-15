@@ -16,10 +16,11 @@
 	if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_reservation'])) {
 		$flat_id = isset($_POST['flat_id']) ? (int) $_POST['flat_id'] : 0;
 		$csrf_token = $_POST['csrf_token'] ?? '';
+		$bidder_username = $_POST['bidder_username'] ?? '';
 
 		if ($flat_id > 0 && hash_equals($_SESSION['csrf_token'], $csrf_token)) {
-			$statement = mysqli_prepare($con, 'DELETE FROM reserved_flats WHERE flat_id = ? AND bidder_username = ?');
-			mysqli_stmt_bind_param($statement, 'is', $flat_id, $_SESSION['username']);
+			$statement = mysqli_prepare($con, 'DELETE r FROM reserved_flats r JOIN available_flats f ON f.flat_id = r.flat_id WHERE r.flat_id = ? AND r.bidder_username = ? AND (r.bidder_username = ? OR f.owner_username = ?)');
+			mysqli_stmt_bind_param($statement, 'isss', $flat_id, $bidder_username, $_SESSION['username'], $_SESSION['username']);
 			mysqli_stmt_execute($statement);
 			mysqli_stmt_close($statement);
 			$_SESSION['reservation_message'] = 'Reservation deleted successfully.';
@@ -41,7 +42,7 @@
 		JOIN available_flats f ON f.flat_id = r.flat_id
 		JOIN flat_details d ON d.flat_id = f.flat_id
 		JOIN members m ON m.member_id = f.owner_id
-		WHERE r.bidder_username = '$username'";
+		WHERE r.bidder_username = '$username' OR f.owner_username = '$username'";
 
 	$reservations = mysqli_query($con, $query);
 ?>
@@ -64,6 +65,7 @@
 					<th>Location</th>
 					<th>City</th>
 					<th>Owner</th>
+					<th>Reserved by</th>
 					<th>Details</th>
 					<th>Action</th>
 				</tr>
@@ -78,10 +80,12 @@
 						<td><?php echo htmlspecialchars($row['flat_location']); ?></td>
 						<td><?php echo htmlspecialchars($row['flat_city']); ?></td>
 						<td><?php echo htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></td>
+						<td><?php echo htmlspecialchars($row['bidder_username']); ?></td>
 						<td><a href="flat_details.php?id=<?php echo $row['flat_id']; ?>">View</a></td>
 						<td>
 							<form method="post" action="my_reservations.php" onsubmit="return confirm('Delete this reservation?');">
 								<input type="hidden" name="flat_id" value="<?php echo (int) $row['flat_id']; ?>">
+								<input type="hidden" name="bidder_username" value="<?php echo htmlspecialchars($row['bidder_username']); ?>">
 								<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
 								<button type="submit" name="delete_reservation">Delete</button>
 							</form>
