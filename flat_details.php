@@ -11,7 +11,7 @@
 		where f.flat_id=$apt_id");
 	/*print_r($sqldetails);*/
 	$aptdetails = mysqli_fetch_array($sqldetails,MYSQLI_BOTH);
-
+	$guestQuery = mysqli_query($con, "SELECT bidder_name, bidder_contact, bidder_username FROM reserved_flats WHERE flat_id=$apt_id ORDER BY bidder_name");
 
 ?>
 
@@ -66,6 +66,28 @@
 					<td style="padding: 8px 10px;"><?php echo htmlspecialchars($aptdetails['additional_info']); ?></td>
 				</tr>
 			</table>
+		</div>
+
+		<div style="margin-top: 20px;">
+			<h3 style="margin-bottom: 10px;">Current Guests</h3>
+			<?php if ($guestQuery && mysqli_num_rows($guestQuery) > 0): ?>
+				<table class="tblclss" style="border-collapse: collapse; width: 100%;">
+					<tr>
+						<th style="background-color:#95a5a6; padding: 8px 10px;">Name</th>
+						<th style="background-color:#95a5a6; padding: 8px 10px;">Contact</th>
+						<th style="background-color:#95a5a6; padding: 8px 10px;">Username</th>
+					</tr>
+					<?php while ($guest = mysqli_fetch_assoc($guestQuery)): ?>
+					<tr>
+						<td style="padding: 8px 10px;"><?php echo htmlspecialchars($guest['bidder_name']); ?></td>
+						<td style="padding: 8px 10px;"><?php echo htmlspecialchars($guest['bidder_contact']); ?></td>
+						<td style="padding: 8px 10px;"><?php echo htmlspecialchars(!empty($guest['bidder_username']) ? $guest['bidder_username'] : 'N/A'); ?></td>
+					</tr>
+					<?php endwhile; ?>
+				</table>
+			<?php else: ?>
+				<p>No current guest information for this room yet.</p>
+			<?php endif; ?>
 		</div>
 	</div>
 
