@@ -57,6 +57,33 @@
 	if (!$columnCheck || mysqli_num_rows($columnCheck) === 0) {
 		mysqli_query($con, "ALTER TABLE meter_readings ADD water_rate DECIMAL(10,2) NOT NULL DEFAULT 15000.00");
 	}
+	$columnCheck = mysqli_query($con, "SHOW COLUMNS FROM meter_readings LIKE 'is_paid'");
+	if (!$columnCheck || mysqli_num_rows($columnCheck) === 0) {
+		mysqli_query($con, "ALTER TABLE meter_readings ADD is_paid TINYINT(1) NOT NULL DEFAULT 0");
+	}
+
+	$showUnpaidFlats = $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['show_unpaid_flats']);
+	if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_bill_paid'])) {
+		$paidMeterId = isset($_POST['meter_id']) ? (int)$_POST['meter_id'] : 0;
+		if ($paidMeterId > 0 && $memberId > 0) {
+			mysqli_query($con, "UPDATE meter_readings mr JOIN available_flats f ON f.flat_id = mr.flat_id SET mr.is_paid = 1 WHERE mr.id='$paidMeterId' AND f.owner_id='$memberId'");
+		}
+		$showUnpaidFlats = true;
+	}
+
+	$unpaidFlatRows = array();
+	if ($showUnpaidFlats && $memberId > 0) {
+		$unpaidSql = "SELECT mr.id, mr.month_label, mr.rent_amount, f.flat_location, d.additional_info
+			FROM meter_readings mr
+			JOIN available_flats f ON f.flat_id = mr.flat_id
+			LEFT JOIN flat_details d ON d.flat_id = f.flat_id
+			WHERE f.owner_id='$memberId' AND mr.is_paid=0
+			ORDER BY mr.month_label DESC, f.flat_id DESC";
+		$unpaidResult = mysqli_query($con, $unpaidSql);
+		while ($unpaidResult && ($unpaidRow = mysqli_fetch_assoc($unpaidResult))) {
+			$unpaidFlatRows[] = $unpaidRow;
+		}
+	}
 
 	$meterSavedMessage = '';
 	$meterMonthValue = isset($_POST['meter_month']) ? trim($_POST['meter_month']) : '';
@@ -165,6 +192,40 @@
 			</div>
 
 			<div style="max-width:1000px; margin:20px auto; padding:20px; border:1px solid #ddd; background:#f9f9f9;">
+				<form method="post" action="userprofile.php" style="margin-bottom:15px;">
+					<button type="submit" name="show_unpaid_flats" value="1" class="button submit">Hi&#7879;n ph&#242;ng ch&#432;a &#273;&#243;ng ti&#7873;n</button>
+				</form>
+
+				<?php if ($showUnpaidFlats): ?>
+					<div style="margin-bottom:15px; padding:12px; background:#fff7e6; border:1px solid #f0c36d;">
+						<strong>Danh s&#225;ch h&#243;a &#273;&#417;n ch&#432;a &#273;&#243;ng</strong>
+						<?php if (!empty($unpaidFlatRows)): ?>
+							<table class="tblclss" style="border-collapse:collapse; width:100%; margin-top:8px;">
+								<tr>
+									<th style="padding:8px 10px;">Ph&#242;ng</th>
+									<th style="padding:8px 10px;">Th&#225;ng</th>
+									<th style="padding:8px 10px;">S&#7889; ti&#7873;n</th>
+									<th style="padding:8px 10px;">Tr&#7841;ng th&#225;i</th>
+								</tr>
+								<?php foreach ($unpaidFlatRows as $unpaidRow): ?>
+								<tr>
+									<td style="padding:8px 10px;"><?php echo htmlspecialchars($unpaidRow['flat_location'] . ' - ' . $unpaidRow['additional_info']); ?></td>
+									<td style="padding:8px 10px;"><?php echo htmlspecialchars($unpaidRow['month_label']); ?></td>
+									<td style="padding:8px 10px;"><?php echo number_format($unpaidRow['rent_amount'], 0, ',', '.'); ?> VND</td>
+									<td style="padding:8px 10px;">
+										<form method="post" action="userprofile.php" style="display:inline;">
+											<input type="hidden" name="meter_id" value="<?php echo (int)$unpaidRow['id']; ?>">
+											<button type="submit" name="mark_bill_paid" value="1" class="button submit">&#272;&#227; &#273;&#243;ng</button>
+										</form>
+									</td>
+								</tr>
+								<?php endforeach; ?>
+							</table>
+						<?php else: ?>
+							<p>Kh&#244;ng c&#243; ph&#242;ng n&#224;o ch&#432;a &#273;&#243;ng ti&#7873;n.</p>
+						<?php endif; ?>
+					</div>
+				<?php endif; ?>
 				<h2>Tính tiền phòng</h2>
 				<?php if (empty($myFlats)): ?>
 					<p>Bạn chưa đăng phòng nào.</p>
