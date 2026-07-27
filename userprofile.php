@@ -74,7 +74,13 @@
 	$unpaidFlatRows = array();
 	if ($showUnpaidFlats && $memberId > 0) {
 		$unpaidSql = "SELECT mr.id, mr.month_label, mr.rent_amount, f.flat_location, d.additional_info
-			FROM meter_readings mr
+			FROM (
+				SELECT flat_id, MAX(month_label) AS month_label
+				FROM meter_readings
+				WHERE is_paid=0
+				GROUP BY flat_id
+			) latest_unpaid
+			JOIN meter_readings mr ON mr.flat_id = latest_unpaid.flat_id AND mr.month_label = latest_unpaid.month_label
 			JOIN available_flats f ON f.flat_id = mr.flat_id
 			LEFT JOIN flat_details d ON d.flat_id = f.flat_id
 			WHERE f.owner_id='$memberId' AND mr.is_paid=0
