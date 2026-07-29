@@ -63,6 +63,8 @@
 	}
 
 	$showUnpaidFlats = $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['show_unpaid_flats']);
+	$currentBillingMonth = date('Y-m');
+	$previousBillingMonth = date('Y-m', strtotime('first day of previous month'));
 	if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_bill_paid'])) {
 		$paidMeterId = isset($_POST['meter_id']) ? (int)$_POST['meter_id'] : 0;
 		if ($paidMeterId > 0 && $memberId > 0) {
@@ -73,18 +75,17 @@
 
 	$unpaidFlatRows = array();
 	if ($showUnpaidFlats && $memberId > 0) {
-		$unpaidSql = "SELECT mr.id, mr.month_label, mr.rent_amount, f.flat_location, d.additional_info
-			FROM (
-				SELECT flat_id, MAX(month_label) AS month_label
-				FROM meter_readings
-				WHERE is_paid=0
-				GROUP BY flat_id
-			) latest_unpaid
-			JOIN meter_readings mr ON mr.flat_id = latest_unpaid.flat_id AND mr.month_label = latest_unpaid.month_label
-			JOIN available_flats f ON f.flat_id = mr.flat_id
+		$unpaidSql = "SELECT mr.id, billing_month.month_label, mr.rent_amount, f.flat_location, d.additional_info
+			FROM available_flats f
+			CROSS JOIN (
+				SELECT '$currentBillingMonth' AS month_label
+				UNION ALL
+				SELECT '$previousBillingMonth' AS month_label
+			) billing_month
 			LEFT JOIN flat_details d ON d.flat_id = f.flat_id
-			WHERE f.owner_id='$memberId' AND mr.is_paid=0
-			ORDER BY f.flat_id ASC, mr.month_label DESC";
+			LEFT JOIN meter_readings mr ON mr.flat_id = f.flat_id AND mr.month_label=billing_month.month_label
+			WHERE f.owner_id='$memberId' AND (mr.id IS NULL OR mr.is_paid=0)
+			ORDER BY billing_month.month_label DESC, f.flat_id ASC";
 		$unpaidResult = mysqli_query($con, $unpaidSql);
 		while ($unpaidResult && ($unpaidRow = mysqli_fetch_assoc($unpaidResult))) {
 			$unpaidFlatRows[] = $unpaidRow;
@@ -199,12 +200,12 @@
 
 			<div style="max-width:1000px; margin:20px auto; padding:20px; border:1px solid #ddd; background:#f9f9f9;">
 				<form method="post" action="userprofile.php" style="margin-bottom:15px;">
-					<button type="submit" name="show_unpaid_flats" value="1" class="button submit">Hi&#7879;n ph&#242;ng ch&#432;a &#273;&#243;ng ti&#7873;n</button>
+					<button type="submit" name="show_unpaid_flats" value="1" class="button submit">Hi&#7879;n ph&#242;ng ch&#432;a &#273;&#243;ng ti&#7873;n 2 th&#225;ng g&#7847;n nh&#7845;t</button>
 				</form>
 
 				<?php if ($showUnpaidFlats): ?>
 					<div style="margin-bottom:15px; padding:12px; background:#fff7e6; border:1px solid #f0c36d;">
-						<strong>Danh s&#225;ch h&#243;a &#273;&#417;n ch&#432;a &#273;&#243;ng</strong>
+						<strong>Danh s&#225;ch h&#243;a &#273;&#417;n ch&#432;a &#273;&#243;ng: <?php echo htmlspecialchars($currentBillingMonth); ?> v&#224; <?php echo htmlspecialchars($previousBillingMonth); ?></strong>
 						<?php if (!empty($unpaidFlatRows)): ?>
 							<table class="tblclss" style="border-collapse:collapse; width:100%; margin-top:8px;">
 								<tr>
@@ -217,12 +218,16 @@
 								<tr>
 									<td style="padding:8px 10px;"><?php echo htmlspecialchars($unpaidRow['flat_location'] . ' - ' . $unpaidRow['additional_info']); ?></td>
 									<td style="padding:8px 10px;"><?php echo htmlspecialchars($unpaidRow['month_label']); ?></td>
-									<td style="padding:8px 10px;"><?php echo number_format($unpaidRow['rent_amount'], 0, ',', '.'); ?> VND</td>
+									<td style="padding:8px 10px;"><?php echo $unpaidRow['id'] ? number_format($unpaidRow['rent_amount'], 0, ',', '.') . ' VND' : 'Ch&#432;a t&#7841;o h&#243;a &#273;&#417;n'; ?></td>
 									<td style="padding:8px 10px;">
+										<?php if ($unpaidRow['id']): ?>
 										<form method="post" action="userprofile.php" style="display:inline;">
 											<input type="hidden" name="meter_id" value="<?php echo (int)$unpaidRow['id']; ?>">
 											<button type="submit" name="mark_bill_paid" value="1" class="button submit">&#272;&#227; &#273;&#243;ng</button>
 										</form>
+										<?php else: ?>
+											Ch&#432;a t&#7841;o h&#243;a &#273;&#417;n
+										<?php endif; ?>
 									</td>
 								</tr>
 								<?php endforeach; ?>
