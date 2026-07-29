@@ -63,8 +63,17 @@
 	}
 
 	$showUnpaidFlats = $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['show_unpaid_flats']);
-	$currentBillingMonth = date('Y-m');
-	$previousBillingMonth = date('Y-m', strtotime('first day of previous month'));
+	$unpaidMonthCount = isset($_POST['unpaid_month_count']) ? (int)$_POST['unpaid_month_count'] : 2;
+	$unpaidMonthCount = max(1, min(12, $unpaidMonthCount));
+	$billingMonths = array();
+	for ($monthOffset = 0; $monthOffset < $unpaidMonthCount; $monthOffset++) {
+		$billingMonths[] = date('Y-m', strtotime("first day of this month -$monthOffset months"));
+	}
+	$billingMonthSelects = array();
+	foreach ($billingMonths as $billingMonth) {
+		$billingMonthSelects[] = "SELECT '$billingMonth' AS month_label";
+	}
+	$billingMonthsSql = implode(' UNION ALL ', $billingMonthSelects);
 	if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_bill_paid'])) {
 		$paidMeterId = isset($_POST['meter_id']) ? (int)$_POST['meter_id'] : 0;
 		if ($paidMeterId > 0 && $memberId > 0) {
@@ -78,9 +87,7 @@
 		$unpaidSql = "SELECT mr.id, billing_month.month_label, mr.rent_amount, f.flat_location, d.additional_info
 			FROM available_flats f
 			CROSS JOIN (
-				SELECT '$currentBillingMonth' AS month_label
-				UNION ALL
-				SELECT '$previousBillingMonth' AS month_label
+				$billingMonthsSql
 			) billing_month
 			LEFT JOIN flat_details d ON d.flat_id = f.flat_id
 			LEFT JOIN meter_readings mr ON mr.flat_id = f.flat_id AND mr.month_label=billing_month.month_label
@@ -200,12 +207,20 @@
 
 			<div style="max-width:1000px; margin:20px auto; padding:20px; border:1px solid #ddd; background:#f9f9f9;">
 				<form method="post" action="userprofile.php" style="margin-bottom:15px;">
-					<button type="submit" name="show_unpaid_flats" value="1" class="button submit">Hi&#7879;n ph&#242;ng ch&#432;a &#273;&#243;ng ti&#7873;n 2 th&#225;ng g&#7847;n nh&#7845;t</button>
+					<label>
+						<strong>S&#7889; th&#225;ng g&#7847;n nh&#7845;t ch&#432;a &#273;&#243;ng</strong><br>
+						<select name="unpaid_month_count">
+							<?php for ($monthOption = 1; $monthOption <= 12; $monthOption++): ?>
+								<option value="<?php echo $monthOption; ?>" <?php if ($unpaidMonthCount === $monthOption) echo 'selected'; ?>><?php echo $monthOption; ?> th&#225;ng</option>
+							<?php endfor; ?>
+						</select>
+					</label>
+					<button type="submit" name="show_unpaid_flats" value="1" class="button submit">Hi&#7879;n danh s&#225;ch</button>
 				</form>
 
 				<?php if ($showUnpaidFlats): ?>
 					<div style="margin-bottom:15px; padding:12px; background:#fff7e6; border:1px solid #f0c36d;">
-						<strong>Danh s&#225;ch h&#243;a &#273;&#417;n ch&#432;a &#273;&#243;ng: <?php echo htmlspecialchars($currentBillingMonth); ?> v&#224; <?php echo htmlspecialchars($previousBillingMonth); ?></strong>
+						<strong>Danh s&#225;ch h&#243;a &#273;&#417;n ch&#432;a &#273;&#243;ng trong <?php echo $unpaidMonthCount; ?> th&#225;ng g&#7847;n nh&#7845;t</strong>
 						<?php if (!empty($unpaidFlatRows)): ?>
 							<table class="tblclss" style="border-collapse:collapse; width:100%; margin-top:8px;">
 								<tr>
@@ -223,6 +238,7 @@
 										<?php if ($unpaidRow['id']): ?>
 										<form method="post" action="userprofile.php" style="display:inline;">
 											<input type="hidden" name="meter_id" value="<?php echo (int)$unpaidRow['id']; ?>">
+											<input type="hidden" name="unpaid_month_count" value="<?php echo $unpaidMonthCount; ?>">
 											<button type="submit" name="mark_bill_paid" value="1" class="button submit">&#272;&#227; &#273;&#243;ng</button>
 										</form>
 										<?php else: ?>
