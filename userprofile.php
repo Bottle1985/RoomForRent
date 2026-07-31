@@ -198,11 +198,6 @@
 			<strong><a href="editprofile.php">Edit Profile</a></strong>
 				
 				</p>
-				<p>
-					<form action="logout.php">
-					<button type="submit" class="button submit">Log Out</button>
-					</form>
-				</p>
 			</div>
 
 			<div style="max-width:1000px; margin:20px auto; padding:20px; border:1px solid #ddd; background:#f9f9f9;">

@@ -22,6 +22,7 @@
 			<th>No. Of Rooms</th>
 			<th>Rent (VND)</th>
 			<th>Location</th>
+			<th>Additional Information</th>
 			<th>City</th>
 			<th>Action</th>
 			
@@ -35,6 +36,7 @@
 				<td><?php echo $adinfo['num_of_rooms'] ?></td>
 				<td><?php echo number_format($adinfo['flat_rent'], 0, ',', '.'); ?> VND</td>
 				<td><?php echo $adinfo['flat_location'] ?></td>
+				<td><?php echo htmlspecialchars($adinfo['additional_info']); ?></td>
 				<td><?php echo $adinfo['flat_city'] ?></td>
 				<td><a href="post_edit.php?id=<?php echo $adinfo['flat_id'];?>">Edit Ad</a></td>
 			</tr><?php $i++;
