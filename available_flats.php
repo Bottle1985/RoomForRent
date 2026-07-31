@@ -11,10 +11,9 @@
 
 <?php
 
-	$apartments = mysqli_query($con,"SELECT m.first_name, m.last_name, f.flat_id, f.flat_city, f.flat_location, f.flat_rent, f.available, 
+	$apartments = mysqli_query($con,"SELECT f.flat_id, f.flat_city, f.flat_location, f.flat_rent, f.available, 
 		d.flat_size,d.num_of_rooms, d.additional_info 
 		FROM available_flats f 
-		join members m on m.member_id =f.owner_id 
 		join flat_details d on d.flat_id=f.flat_id
 		WHERE f.available = 1");
 	/*foreach ($apartments as $apartment ) {
@@ -33,9 +32,9 @@
 			<th>No. Of Rooms</th>
 			<th>Rent</th>
 			<th>Location</th>
+			<th>Additional Information</th>
 			<th>City</th>
 			<th>Availability</th>
-			<th>Owners Name</th>
 			<th>Action</th>
 		</tr>
 		</thead>
@@ -49,9 +48,9 @@
 				<td data-label="No. Of Rooms"><?php echo $apartment['num_of_rooms'] ?></td>
 				<td data-label="Rent"><?php echo number_format($apartment['flat_rent'], 0, ',', '.'); ?> VND</td>
 				<td data-label="Location"><?php echo $apartment['flat_location'] ?></td>
+				<td data-label="Additional Information"><?php echo htmlspecialchars($apartment['additional_info']); ?></td>
 				<td data-label="City"><?php echo $apartment['flat_city'] ?></td>
 				<td data-label="Availability"><?php if($apartment['available']==1){?> <a href="flat_details.php?id=<?php echo $apartment['flat_id'];?>">Show Details</a><?php } else{echo "NOT AVAILABLE"; } ?></td>
-				<td data-label="Owner"><?php echo $apartment['first_name'].' '.$apartment['last_name'] ?></td>
 				<td data-label="Action"><a href="reserve_flat.php?id=<?php echo $apartment['flat_id'];?>">Reserve Flat</a></td>
 			</tr><?php
 		}

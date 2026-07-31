@@ -14,7 +14,7 @@
 	$selectedFlatId = isset($_POST['flat_id']) ? intval($_POST['flat_id']) : 0;
 	$myFlats = array();
 	if ($memberId > 0) {
-		$flatQuery = mysqli_query($con, "SELECT f.flat_id, f.flat_city, f.flat_location, f.flat_rent, d.additional_info FROM available_flats f LEFT JOIN flat_details d ON d.flat_id = f.flat_id WHERE f.owner_id='$memberId' ORDER BY f.flat_id ASC");
+		$flatQuery = mysqli_query($con, "SELECT f.flat_id, f.flat_city, f.flat_location, f.flat_rent, d.additional_info FROM available_flats f LEFT JOIN flat_details d ON d.flat_id = f.flat_id WHERE f.owner_id='$memberId' ORDER BY f.flat_location ASC, f.flat_id ASC");
 		while ($flatRow = mysqli_fetch_assoc($flatQuery)) {
 			$myFlats[] = $flatRow;
 		}
