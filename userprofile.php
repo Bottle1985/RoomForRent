@@ -254,12 +254,11 @@
 				<?php else: ?>
 					<form method="post" action="userprofile.php" style="margin-bottom:15px;">
 						<label><strong>Chọn phòng</strong><br>
-						<select name="flat_id">
+						<select name="flat_id" onchange="this.form.submit()">
 							<?php foreach ($myFlats as $flatRow): ?>
 							<option value="<?php echo (int)$flatRow['flat_id']; ?>" <?php if ($selectedFlatId === (int)$flatRow['flat_id']) echo 'selected'; ?>><?php echo htmlspecialchars($flatRow['flat_location'] . ' - ' . $flatRow['additional_info']); ?></option>
 						<?php endforeach; ?>
 					</select></label>
-					<button type="submit" class="button submit">Chọn phòng</button>
 				</form>
 
 				<?php if ($selectedFlat !== null): ?>
