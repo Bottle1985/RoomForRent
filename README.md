@@ -10,3 +10,5 @@ Step to run
 I. Creat database
 1. Go to phpadmin
 2. Import form file Database/DB.sql
+
+II. Web page (https://roomforrent.free.nf/) 
