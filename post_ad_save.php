@@ -129,11 +129,16 @@
 	}
 	?>
 
+<?php
+    $flat_id = mysqli_insert_id($con);
+?>
+
 
 <?php
 	$sqld= "INSERT INTO flat_details
-	(flat_city,flat_location,flat_size,num_of_rooms,additional_info,image,video)
+    (flat_id, flat_city,flat_location,flat_size,num_of_rooms,additional_info,image,video)
 		VALUES (
+            '".$flat_id."',
 			'".$_POST['flat_city']."',
 			'".$_POST['flat_location']."',
 			'".$_POST['flat_size']."',

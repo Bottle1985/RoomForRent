@@ -78,7 +78,7 @@ $aptdetails = mysqli_fetch_array($sqldetails, MYSQLI_BOTH);
 
 <p>
 <strong>Apartment Video URL</strong><br>
-<input id="text5" type="url" name="video_url" value="<?php echo htmlspecialchars($aptdetails['video']); ?>" placeholder="https://youtu.be/... or https://example.com/video.mp4"/>
+<input id="text5" type="text" name="video_url" value="<?php echo htmlspecialchars($aptdetails['video']); ?>" placeholder="https://youtu.be/... or video.mp4"/>
 </p>
 
 <p>

@@ -6,11 +6,15 @@
 
 	$sqldetails=mysqli_query($con,"SELECT * 
 		FROM available_flats f 
-		join members m on m.member_id =f.owner_id 
-		join flat_details d on d.flat_id=f.flat_id 
+		LEFT JOIN members m on m.member_id =f.owner_id 
+		LEFT JOIN flat_details d on d.flat_id=f.flat_id 
 		where f.flat_id=$apt_id");
 	/*print_r($sqldetails);*/
 	$aptdetails = mysqli_fetch_array($sqldetails,MYSQLI_BOTH);
+	if (!$aptdetails) {
+		echo '<div style="padding:20px;">Apartment details not found.</div>';
+		exit;
+	}
 	$guestQuery = mysqli_query($con, "SELECT bidder_name, bidder_contact, bidder_username FROM reserved_flats WHERE flat_id=$apt_id ORDER BY bidder_name");
 
 ?>
@@ -32,23 +36,26 @@
 				echo '<div>No images available for this flat.</div>';
 			}
 			?>
-
+		} else {
+		    echo '<div style="margin: 20px 0;">No video has been added for this apartment.</div>';
+		}
 		</div>
 
 		<?php
 		$videoField = trim((string)$aptdetails['video']);
 		if (!empty($videoField)) {
+		    $videoField = str_replace('\\', '/', $videoField);
 		    echo '<div style="margin: 20px 0;">';
 		    echo '<h3 style="margin-bottom: 10px;">Apartment Video</h3>';
-		    if (preg_match('/(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtu\.be\/)([A-Za-z0-9_-]+)/i', $videoField, $match)) {
+		    if (preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]+)/i', $videoField, $match)) {
 		        $youtubeId = $match[1];
 		        echo '<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 800px; border-radius: 8px; background: #000;">';
 		        echo '<iframe src="https://www.youtube.com/embed/' . htmlspecialchars($youtubeId) . '" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" allowfullscreen></iframe>';
 		        echo '</div>';
-		    } elseif (preg_match('/\.(mp4|webm|ogg|mov)(\?.*)?$/i', $videoField)) {
+		    } elseif (preg_match('/\.(mp4|webm|ogg|mov)(\?.*)?$/i', basename($videoField))) {
 		        $videoSource = preg_match('/^https?:\/\//i', $videoField) ? $videoField : 'apartment_images/' . $videoField;
 		        echo '<video controls style="width: 100%; max-width: 800px; border-radius: 8px; background: #000;">';
-		        echo '<source src="' . htmlspecialchars($videoSource) . '" type="video/' . strtolower(pathinfo($videoField, PATHINFO_EXTENSION)) . '">';
+		        echo '<source src="' . htmlspecialchars($videoSource) . '" type="video/' . strtolower(pathinfo(basename($videoField), PATHINFO_EXTENSION)) . '">';
 		        echo 'Your browser does not support the video tag.';
 		        echo '</video>';
 		    } else {
