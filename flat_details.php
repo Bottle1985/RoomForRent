@@ -36,9 +36,6 @@
 				echo '<div>No images available for this flat.</div>';
 			}
 			?>
-		} else {
-		    echo '<div style="margin: 20px 0;">No video has been added for this apartment.</div>';
-		}
 		</div>
 
 		<?php
@@ -62,6 +59,8 @@
 		        echo '<a href="' . htmlspecialchars($videoField) . '" target="_blank" rel="noopener">Watch apartment video</a>';
 		    }
 		    echo '</div>';
+		} else {
+		    echo '<div style="margin: 20px 0;">No video has been added for this apartment.</div>';
 		}
 		?>
 		
