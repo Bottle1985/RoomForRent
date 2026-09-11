@@ -60,7 +60,40 @@
         }
     }
 
+    $uploadedVideo = '';
+    if (isset($_FILES['video']) && $_FILES['video']['name'] !== '') {
+        $videoFile = $_FILES['video'];
+        $videoError = $videoFile['error'];
 
+        if ($videoError === UPLOAD_ERR_NO_FILE) {
+            $uploadedVideo = '';
+        } elseif ($videoError === UPLOAD_ERR_OK) {
+            $videoName = basename($videoFile['name']);
+            $videoExt = strtolower(pathinfo($videoName, PATHINFO_EXTENSION));
+            $allowedVideoExt = array('mp4','webm','ogg','mov');
+
+            if (!in_array($videoExt, $allowedVideoExt)) {
+                echo "Please upload a valid video file (mp4, webm, ogg, mov).";
+            } elseif ($videoFile['size'] > 52428800) {
+                echo "Video file is too large, it should be below 50 MB.";
+            } else {
+                $safeVideoName = time() . '_' . str_replace(' ', '_', $videoName);
+                if (move_uploaded_file($videoFile['tmp_name'], "apartment_images/" . $safeVideoName)) {
+                    $uploadedVideo = $safeVideoName;
+                } else {
+                    echo "Failed to save uploaded video file.";
+                }
+            }
+        } else {
+            echo "Video upload error.";
+        }
+    }
+
+    $videoValue = trim((string)($_POST['video_url'] ?? ''));
+    if ($videoValue === '' && $uploadedVideo !== '') {
+        $videoValue = $uploadedVideo;
+    }
+    $_POST['video'] = $videoValue;
 
 
 
@@ -99,14 +132,15 @@
 
 <?php
 	$sqld= "INSERT INTO flat_details
-	(flat_city,flat_location,flat_size,num_of_rooms,additional_info,image)
+	(flat_city,flat_location,flat_size,num_of_rooms,additional_info,image,video)
 		VALUES (
 			'".$_POST['flat_city']."',
 			'".$_POST['flat_location']."',
 			'".$_POST['flat_size']."',
 			'".$_POST['num_of_rooms']."',
 			'".$_POST['additional_info']."',
-			'".$_POST['image']."'
+			'".$_POST['image']."',
+			'".$_POST['video']."'
 			);
 	";
 

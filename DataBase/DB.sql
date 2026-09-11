@@ -57,7 +57,8 @@ CREATE TABLE `flat_details` (
   `flat_size` int(100) NOT NULL,
   `num_of_rooms` int(100) NOT NULL,
   `additional_info` text NOT NULL,
-  `image` text NOT NULL
+  `image` text NOT NULL,
+  `video` text NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --

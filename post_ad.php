@@ -53,6 +53,14 @@ if(!$_SESSION['id1370950_demo_cse311'])
     			<input type="file" name="image[]" id="image" multiple>
     			</div>
 				<p>
+					<strong>Apartment Video URL</strong><br>
+					<input id="text5" type="url" name="video_url" placeholder="https://youtu.be/... or https://example.com/video.mp4"/>
+				</p>
+				<p>
+					<strong>Upload Video File</strong><br>
+					<input type="file" name="video" id="video" accept="video/mp4,video/webm,video/ogg,video/quicktime">
+				</p>
+				<p>
 					<strong>Additional Informations</strong><br>
 					<input id="text5" type="text" name="additional_info"/>
 				</p>  
